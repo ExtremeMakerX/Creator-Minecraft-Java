@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "creatorminecraft",
+  "version": "${version}",
+  "name": "Creator Minecraft Java",
+  "description": "It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!",
+  "metadata": {
+    "name": "Creator Minecraft Java",
+    "description": "This is an example description! Tell everyone what your mod is about!",
+    "authors": [
+      "ExtremeMakerX"
+      ],
+    "icon": "assets/creatorminecraft/icon.png",
+  },
+  "contact": {
+    "discord": "https://discord.gg/CYNUqB55da"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "creatorminecraft.fabric.CreatorMCFabric"
+    ]
+  },
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.20.1",
+    "architectury": ">=9.1.12"
+  }
+}

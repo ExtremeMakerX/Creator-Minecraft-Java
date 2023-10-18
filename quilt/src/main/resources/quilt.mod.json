@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "creatorminecraft",
+    "id": "creatorminecraft",
+    "version": "${version}",
+    "metadata": {
+      "name": "Creator Minecraft Java",
+      "description": "This is an example description! Tell everyone what your mod is about!",
+      "contributors": {
+        "ExtremeMakerX": "Owner"
+      },
+      "icon": "assets/creatorminecraft/icon.png",
+      "license": "MIT"
+    },
+    "contact": {
+      "discord": "https://discord.gg/CYNUqB55da"
+    },
+  "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": "creatorminecraft.quilt.ExampleModQuilt"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.21.0-"
+      },
+      {
+        "id": "quilted_fabric_api",
+        "versions": ">=7.4.0-"
+      },
+      {
+        "id": "minecraft",
+        "version": ">=1.20.1"
+      },
+      {
+        "id": "architectury",
+        "version": ">=9.1.12"
+      }
+    ]
+    }
+  }
