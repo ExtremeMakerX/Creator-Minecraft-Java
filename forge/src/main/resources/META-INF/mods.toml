@@ -1,35 +1,33 @@
 modLoader = "javafml"
-loaderVersion = "[45,)"
+loaderVersion = "[47,)"
 #issueTrackerURL = ""
-license = "Insert License Here"
+license = "MIT"
 
 [[mods]]
 modId = "creatorminecraft"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
-description = '''
-This is an example description! Tell everyone what your mod is about!
-'''
+displayName = "Creator Minecraft Java"
+authors = "ExtremeMakerX"
+description = '''It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!'''
 #logoFile = ""
 
 [[dependencies.creatorminecraft]]
 modId = "forge"
 mandatory = true
-versionRange = "[45,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.creatorminecraft]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.4,)"
+versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.creatorminecraft]]
 modId = "architectury"
 mandatory = true
-versionRange = "[8.1.79,)"
+versionRange = "[9.1.12,)"
 ordering = "AFTER"
 side = "BOTH"

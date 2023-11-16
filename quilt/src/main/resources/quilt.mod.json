@@ -6,19 +6,19 @@
     "version": "${version}",
     "metadata": {
       "name": "Creator Minecraft Java",
-      "description": "This is an example description! Tell everyone what your mod is about!",
+      "description": "It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!",
       "contributors": {
         "ExtremeMakerX": "Owner"
       },
       "icon": "assets/creatorminecraft/icon.png",
-      "license": "MIT"
-    },
-    "contact": {
-      "discord": "https://discord.gg/CYNUqB55da"
+      "license": "MIT",
+      "contact": {
+        "discord": "https://discord.gg/CYNUqB55da"
+      }
     },
   "intermediate_mappings": "net.fabricmc:intermediary",
     "entrypoints": {
-      "init": "creatorminecraft.quilt.ExampleModQuilt"
+      "init": "creatorminecraft.quilt.CreatorMCQuilt"
     },
     "depends": [
       {
@@ -38,5 +38,8 @@
         "version": ">=9.1.12"
       }
     ]
-    }
-  }
+  },
+  "mixin": [
+    "creatorminecraft.mixins.json"
+  ]
+}

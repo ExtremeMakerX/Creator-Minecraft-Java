@@ -1,0 +1,6 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "creatorminecraft:item/creator_minecraft_java_icon"
+	}
+}

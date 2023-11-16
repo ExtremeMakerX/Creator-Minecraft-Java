@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "creatorminecraft.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"client": [
+		"GameRendererMixin"
+	],
+	"server": [],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

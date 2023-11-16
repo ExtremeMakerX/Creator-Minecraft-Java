@@ -1,3 +1,24 @@
 {
-  "item.creatorminecraft.example_item": "Example Item"
+  "block.creatorminecraft.creator_world_visual": "Creator World Visual",
+  "item.creatorminecraft.addon_plugin_manager": "Addon Plugin Manager",
+  "item.creatorminecraft.dynamic_registry_manager": "Dynamic Registry Manager",
+  "item.creatorminecraft.creator_minecraft_java": "Creator Minecraft Java",
+  "itemgroup.creatorminecraft.creator_essentials": "Creator Essentials",
+  "gui.creatorminecraft.new_project": "New Project",
+  "gui.creatorminecraft.save_project": "Save Project",
+  "gui.creatorminecraft.save_as_project": "Save As Project",
+  "gui.creatorminecraft.model_edit": "Model Edit",
+  "gui.creatorminecraft.blockbench_mode": "Full Model Edit",
+  "gui.creatorminecraft.camera_reset": "Camera Reset",
+  "gui.creatorminecraft.screenshot_mode": "Screenshot Mode",
+  "gui.creatorminecraft.player_camera": "Player Camera",
+  "gui.creatorminecraft.exit.screenshot_mode": "Exit Screenshot",
+  "gui.creatorminecraft.shader_render": "Shader Render",
+  "gui.creatorminecraft.color_blend_render": "Color Blend",
+  "gui.creatorminecraft.camera_presets": "Camera Presets",
+  "gui.creatorminecraft.theme.settings": "Theme Settings",
+  "gui.creatorminecraft.keyboard.shortcuts": "Keyboard Shortcuts",
+  "gui.creatorminecraft.addon.plugin.manager": "Addon Plugin Manager",
+  "gui.creatorminecraft.dynamic.registry.manager": "Dynamic Registry Manager",
+  "gui.creatorminecraft.exit.creator.settings": "Exit"
 }

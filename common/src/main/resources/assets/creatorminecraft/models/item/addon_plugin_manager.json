@@ -1,0 +1,6 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "creatorminecraft:item/addon_plugin_manager_icon"
+	}
+}

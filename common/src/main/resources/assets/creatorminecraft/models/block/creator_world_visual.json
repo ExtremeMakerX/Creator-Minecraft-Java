@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "creatorminecraft:block/creator_model_editing_particle",
+    "north": "creatorminecraft:block/creator_model_editing_side_2",
+    "south": "creatorminecraft:block/creator_model_editing_side_2",
+    "east": "creatorminecraft:block/creator_model_editing_side_1",
+    "west": "creatorminecraft:block/creator_model_editing_side_1",
+    "up": "creatorminecraft:block/creator_model_editing_top",
+    "down": "creatorminecraft:block/creator_model_editing_bottom"
+  }
+}
