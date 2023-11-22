@@ -17,7 +17,7 @@ public class ModelXZPlane extends EntityModel<Entity> {
         final int textureHeight = 1680;
 
         main = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
-        main.setPos(0.0F, 24.0F, 0.0F);
+        main.setPos(0.0F, 0.0F, 0.0F);
         main.texOffs(0, 0).addBox(-208.5F, 0.0F, -208.5F, 417.0F, 0.0F, 417.0F, 0.0F, false);
     }
 

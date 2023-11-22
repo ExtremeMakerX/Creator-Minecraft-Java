@@ -61,7 +61,7 @@ public class ModelPartBuilder {
         this.texOffs(k, l);
     }
 
-    private ModelPartBuilder() {
+    ModelPartBuilder() {
         this.xTexSize = 64.0F;
         this.yTexSize = 32.0F;
         this.visible = true;
@@ -166,6 +166,12 @@ public class ModelPartBuilder {
             poseStack.mulPose(Axis.XP.rotation(this.xRot));
         }
 
+    }
+
+    public void setRotationAngle(float rotationX, float rotationY, float rotationZ) {
+        xRot = rotationX;
+        yRot = rotationY;
+        zRot = rotationZ;
     }
 
     private void compile(PoseStack.Pose pose, VertexConsumer vertexConsumer, int i, int j, float f, float g, float h, float k) {

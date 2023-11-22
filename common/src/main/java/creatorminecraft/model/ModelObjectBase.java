@@ -13,6 +13,10 @@ public class ModelObjectBase extends EntityModel<Entity> {
     public final void renderToBuffer(PoseStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha ) {
     }
 
+    protected static void setRotationAngle(ModelPartBuilder bone, float x, float y, float z) {
+        bone.setRotationAngle(x, y, z);
+    }
+
     public static void renderOnce(ModelPartBuilder bone, PoseStack matrices, VertexConsumer vertices, int light, int position) {
         bone.render(matrices, vertices, light, position);
     }

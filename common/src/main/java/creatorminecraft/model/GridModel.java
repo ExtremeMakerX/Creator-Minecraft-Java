@@ -18,7 +18,7 @@ public class GridModel extends EntityModel<Entity> {
 		final int textureHeight = 450;
 
 		main = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
-		main.setPos(0, 24, 0);
+		main.setPos(0, 0, 0);
 		main.texOffs(-200, 0).addBox(-100, 15.7F, -100, 200, 0, 200, 0, false);
 	}
 

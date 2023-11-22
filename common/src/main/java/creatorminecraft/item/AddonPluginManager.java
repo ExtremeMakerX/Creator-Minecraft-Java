@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class AddonPluginManager extends Item {
-
+    //Not Functional
     public AddonPluginManager(Properties settings) {
         super(settings);
     }

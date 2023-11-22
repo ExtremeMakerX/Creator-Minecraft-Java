@@ -45,12 +45,12 @@ public class BlockCreatorWorldVisualRenderer extends BlockEntity {
             final MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
             GridModel gridModel = new GridModel();
             poseStack.pushPose();
-            poseStack.translate(0, -3.5f, 0.5);
+            poseStack.translate(0, -2.0f, 0.5);
             gridModel.render(poseStack, bufferSource, 0xF000F0, 0);
             poseStack.popPose();
             ModelXZPlane modelXZPlane = new ModelXZPlane();
             poseStack.pushPose();
-            poseStack.translate(0, -2.52f, 0.5);
+            poseStack.translate(0, -1.02f, 0.5);
             modelXZPlane.render(poseStack, bufferSource, 0xF000F0, 0);
             poseStack.popPose();
             poseStack.popPose();

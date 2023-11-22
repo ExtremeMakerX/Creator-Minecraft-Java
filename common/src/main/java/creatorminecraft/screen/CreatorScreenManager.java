@@ -32,7 +32,7 @@ public class CreatorScreenManager extends Screen implements CreatorIGUI {
         buttonSaveProject = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.save_project"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonSaveAsProject = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.save_as_project"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
 
-        buttonModelEditGui = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.model_edit"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
+        buttonModelEditGui = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.model_edit"), button -> {CreatorMinecraftScreen.isModelEditGui = true;}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonBlockbenchMode = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.blockbench_mode"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
 
         buttonCameraReset = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.camera_reset"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);

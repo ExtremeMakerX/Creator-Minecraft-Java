@@ -20,5 +20,11 @@
   "gui.creatorminecraft.keyboard.shortcuts": "Keyboard Shortcuts",
   "gui.creatorminecraft.addon.plugin.manager": "Addon Plugin Manager",
   "gui.creatorminecraft.dynamic.registry.manager": "Dynamic Registry Manager",
-  "gui.creatorminecraft.exit.creator.settings": "Exit"
+  "gui.creatorminecraft.exit.creator.settings": "Exit",
+  "gui.mtr.element_model_editor": "Element",
+  "gui.mtr.position_model_editor": "Pos",
+  "gui.mtr.size_model_editor": "Size",
+  "gui.mtr.pivot_model_editor": "Pivot",
+  "gui.mtr.rotation_model_editor": "Rot",
+  "gui.mtr.inflate_model_editor": "In-S"
 }

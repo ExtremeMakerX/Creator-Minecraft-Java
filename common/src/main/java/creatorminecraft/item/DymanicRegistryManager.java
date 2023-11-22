@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class DymanicRegistryManager extends Item {
-
+//Not Functional
     public DymanicRegistryManager(Properties settings) {
         super(settings);
     }
