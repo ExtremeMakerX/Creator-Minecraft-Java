@@ -4,6 +4,7 @@ package creatorminecraft.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import creatorminecraft.Blocks;
+import creatorminecraft.model.DynamicEntityModelEditing;
 import creatorminecraft.model.GridModel;
 import creatorminecraft.model.ModelXZPlane;
 import net.fabricmc.api.EnvType;
@@ -12,10 +13,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.debug.DebugRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockCreatorWorldVisualRenderer extends BlockEntity {
@@ -43,6 +46,11 @@ public class BlockCreatorWorldVisualRenderer extends BlockEntity {
             poseStack.mulPose(Axis.ZP.rotationDegrees(180));
             final Minecraft minecraft = Minecraft.getInstance();
             final MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
+            DynamicEntityModelEditing dynamicEntityModelEditing = new DynamicEntityModelEditing();
+            poseStack.pushPose();
+            poseStack.translate(0, -2.0f, 0.5);
+            dynamicEntityModelEditing.render(poseStack, bufferSource, 0xF000F0, 0);
+            poseStack.popPose();
             GridModel gridModel = new GridModel();
             poseStack.pushPose();
             poseStack.translate(0, -2.0f, 0.5);

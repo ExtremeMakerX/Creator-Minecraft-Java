@@ -35,7 +35,7 @@ public class CreatorScreenManager extends Screen implements CreatorIGUI {
         buttonModelEditGui = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.model_edit"), button -> {CreatorMinecraftScreen.isModelEditGui = true;}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonBlockbenchMode = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.blockbench_mode"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
 
-        buttonCameraReset = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.camera_reset"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
+        buttonCameraReset = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.camera_reset"), button -> {camereReset();}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonScreenshotMode = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.screenshot_mode"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonPlayerCamera = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.player_camera"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
         buttonExitScreenshotMode = new DynamicButtonCMJ(0, 0, 0, STANDARD_SIZE, Component.translatable("gui.creatorminecraft.exit.screenshot_mode"), button -> {}, DynamicButtonCMJ.DEFAULT_NARRATION);
@@ -108,6 +108,14 @@ public class CreatorScreenManager extends Screen implements CreatorIGUI {
         buttonCameraPresets.visible = windowMenuState == 1;
 
         windowMenuState = (windowMenuState == 2) ? 0 : windowMenuState;
+    }
+
+    public void camereReset() {
+        CreatorMinecraftScreen.cameraYaw = 90;
+        CreatorMinecraftScreen.cameraPitch = 220;
+        CreatorMinecraftScreen.cameraX = 0;
+        CreatorMinecraftScreen.cameraY = 0;
+        CreatorMinecraftScreen.cameraZ = 17.5;
     }
 
 }

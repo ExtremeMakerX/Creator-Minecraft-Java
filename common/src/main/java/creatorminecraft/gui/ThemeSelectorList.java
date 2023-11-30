@@ -14,12 +14,14 @@ public class ThemeSelectorList implements CreatorIGUI {
     public int y;
     public int screenWidthCenterTarget;
     public int screenHeightCenterTarget;
-    private static final String[] nameUI = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getNameUI).toArray(String[]::new);
-    private static final String[] authorName = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getAuthorName).toArray(String[]::new);
+    private final String[] nameUI = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getNameUI).toArray(String[]::new);
+    private final String[] authorName = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getAuthorName).toArray(String[]::new);
 
-    private static final String[] customImageThemeWidget = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getCustomImageThemeWidget).toArray(String[]::new);
-    private static final int THEME_WIDGET_SLOT_SIZE = 160;
-    private static final int WIDGET_POSITION = THEME_WIDGET_SLOT_SIZE - BIG_SQUARE_SIZE;
+    private final String[] customImageThemeWidget = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getCustomImageThemeWidget).toArray(String[]::new);
+    private final String[] UISkinExtraImage = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getUISkinExtraImage).toArray(String[]::new);
+    private static String getUISkinExtraImage;
+    private final int THEME_WIDGET_SLOT_SIZE = 160;
+    private final int WIDGET_POSITION = THEME_WIDGET_SLOT_SIZE - BIG_SQUARE_SIZE;
     private boolean isVisible;
     private final boolean[] isHoveredOver = new boolean[2];
 
@@ -66,6 +68,7 @@ public class ThemeSelectorList implements CreatorIGUI {
             final int drawX = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION + screenWidthCenterTarget;
             if (mouseX >= x + drawX && mouseX < x + drawX + STANDARD_SIZE * 3 && mouseY >= y + WIDGET_POSITION && mouseY < y + WIDGET_POSITION + THEME_WIDGET_SLOT_SIZE) {
                 isHoveredOver[i] = true;
+                getUISkinExtraImage = UISkinExtraImage[i];
             }
             }
         }
@@ -83,5 +86,9 @@ public class ThemeSelectorList implements CreatorIGUI {
     }
     public void setVisible(boolean visible) {
         this.isVisible = visible;
+    }
+
+    public static String getUISkinExtraImageEnum() {
+        return getUISkinExtraImage;
     }
 }

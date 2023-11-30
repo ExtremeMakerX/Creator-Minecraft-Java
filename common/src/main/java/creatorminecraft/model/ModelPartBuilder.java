@@ -9,14 +9,12 @@ import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.core.Direction;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class ModelPartBuilder {
@@ -261,6 +259,17 @@ public class ModelPartBuilder {
             }
 
         }
+
+        public boolean contains(float x, float y) {
+            Vector3f p = new Vector3f(x, y, 0.0F);
+            Vector3f n = this.normal;
+            float d = n.dot(p);
+            float s = 0.0F;
+            for (Vertex v : this.vertices) {
+                s += n.dot(v.pos);
+            }
+            return s * d >= 0.0F;
+        }
     }
 
     @Environment(EnvType.CLIENT)
@@ -319,6 +328,25 @@ public class ModelPartBuilder {
             this.polygons[4] = new Polygon(new Vertex[]{vertex2, vertex, vertex4, vertex3}, x, ad, y, ae, q, r, bl, Direction.NORTH);
             this.polygons[0] = new Polygon(new Vertex[]{vertex6, vertex2, vertex3, vertex7}, y, ad, aa, ae, q, r, bl, Direction.EAST);
             this.polygons[5] = new Polygon(new Vertex[]{vertex5, vertex6, vertex7, vertex8}, aa, ad, ab, ae, q, r, bl, Direction.SOUTH);
+        }
+    }
+
+    public static class CubeMouseDetection {
+        private final Cube cube;
+
+        public CubeMouseDetection(int mouseX, int mouseY)  {
+            cube = new Cube(450, 450, -100, 15.4F, -100, 200, 0, 200, 0, 0, 0, false, 64.0F, 32.0F); // Create a cube instance
+            if (isMouseInsideCube(mouseX, mouseY)) {
+                System.out.println("Mouse clicked inside the cube!");
+            }
+        }
+
+        public boolean isMouseInsideCube(int mouseX, int mouseY) {
+            float x = (float) mouseX;
+            float y = (float) mouseY;
+
+            return x >= cube.minX && x <= cube.maxX &&
+                    y >= cube.minY && y <= cube.maxY;
         }
     }
 

@@ -1,5 +1,7 @@
 package creatorminecraft.client;
 
+import java.awt.event.MouseWheelEvent;
+
 public interface CreatorIGUI {
     int PIXEL_SIZE = 1;
     int PIXEL_X2_SIZE = 2;

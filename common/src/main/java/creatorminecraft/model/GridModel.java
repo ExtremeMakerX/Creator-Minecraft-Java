@@ -9,9 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
 public class GridModel extends EntityModel<Entity> {
-	private final ModelPartBuilder main;
+	public final ModelPartBuilder main;
 	private static final ResourceLocation texture = new ResourceLocation("creatorminecraft:textures/gui/grid_cell.png");
-
 
 	public GridModel() {
 		final int textureWidth = 450;
@@ -20,6 +19,7 @@ public class GridModel extends EntityModel<Entity> {
 		main = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
 		main.setPos(0, 0, 0);
 		main.texOffs(-200, 0).addBox(-100, 15.7F, -100, 200, 0, 200, 0, false);
+
 	}
 
 	public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, int position) {
@@ -34,8 +34,5 @@ public class GridModel extends EntityModel<Entity> {
 	public final void renderToBuffer(PoseStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
 
 	}
-
-
-
 
 }

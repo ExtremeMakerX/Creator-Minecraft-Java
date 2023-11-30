@@ -18,6 +18,8 @@ public class ModelObjectBase extends EntityModel<Entity> {
     }
 
     public static void renderOnce(ModelPartBuilder bone, PoseStack matrices, VertexConsumer vertices, int light, int position) {
-        bone.render(matrices, vertices, light, position);
+        if (bone != null) {
+            bone.render(matrices, vertices, light, position);
+        }
     }
 }

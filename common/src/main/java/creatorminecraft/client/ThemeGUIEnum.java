@@ -1,7 +1,7 @@
 package creatorminecraft.client;
 
 public enum ThemeGUIEnum implements CreatorIGUI {
-    LIQUID_UI("Liquid UI V1", "ExtremeMakerX", "", "creatorminecraft:textures/gui/liquid_ui_v1_image.png", ARGB_DARK_GRAY, ""),
+    LIQUID_UI("Liquid UI V1", "ExtremeMakerX", "creatorminecraft:textures/gui/liquid_ui_black_bar.png", "creatorminecraft:textures/gui/liquid_ui_v1_image.png", ARGB_DARK_GRAY, ""),
     MINECRAFT_UI("Minecraft UI", "ExtremeMakerX", "", "creatorminecraft:textures/gui/minecraft_v1_image.png", ARGB_GRAY, "");
 
     public final String UI_NAME;
@@ -26,7 +26,7 @@ public enum ThemeGUIEnum implements CreatorIGUI {
             this.UI_SKIN_EXTRA_IMAGE = UI_SKIN_EXTRA_IMAGE;
         }
 
-    public static ThemeGUIEnum[] getThemeGUIEnum() {
+    public ThemeGUIEnum[] getThemeGUIEnum() {
         return ThemeGUIEnum.values();
     }
     public String getNameUI() {

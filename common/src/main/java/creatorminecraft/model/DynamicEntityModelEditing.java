@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DynamicEntityModelEditing extends EntityModel<Entity> {
-	//public ModelPartBuilder main = new ModelPartBuilder();
 	private static final ResourceLocation texture = new ResourceLocation("creatorminecraft:textures/block/white.png");
 	private boolean movePositionMode;
 	private boolean resizeMode;
@@ -33,21 +32,27 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 	private static float rotationYScreenGetter;
 	private static float rotationZScreenGetter;
 	private static float inflateScreenGetter;
-	private static final List<ModelPartData> modelPartDataList = new ArrayList<>();
-	private final List<ModelPartBuilder> mainList = new ArrayList<>();
+	private static boolean isVisibleGetter;
+	public static final List<ModelPartData> modelPartDataList = new ArrayList<>();
 
 	public DynamicEntityModelEditing() {
 		final int textureWidth = 450;
 		final int textureHeight = 450;
+		if (!modelPartDataList.isEmpty()) {
 			for (ModelPartData modelPartData : modelPartDataList) {
-				modelPartData.main = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
-				modelPartData.main.setPos(modelPartData.pivotX, modelPartData.pivotY, modelPartData.pivotZ);
-				modelPartData.main.setRotationAngle(modelPartData.rotationX, modelPartData.rotationY, modelPartData.rotationZ);
-				modelPartData.main.texOffs(0, 0).addBox(modelPartData.positionX, modelPartData.positionY, modelPartData.positionZ, modelPartData.sizeX, modelPartData.sizeY, modelPartData.sizeZ, modelPartData.inflate, false);
-			}
+				if (modelPartData.main != null) {
+					if (modelPartData.isVisible) {
+						modelPartData.main = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
+						modelPartData.main.setPos(modelPartData.pivotX, modelPartData.pivotY, modelPartData.pivotZ);
+						modelPartData.main.setRotationAngle(modelPartData.rotationX, modelPartData.rotationY, modelPartData.rotationZ);
+						modelPartData.main.texOffs(0, 0).addBox(modelPartData.positionX, modelPartData.positionY, modelPartData.positionZ, modelPartData.sizeX, modelPartData.sizeY, modelPartData.sizeZ, modelPartData.inflate, false);
+					}
+				}
+            }
+		}
 	}
 
-	public void ScreenGUIToolMode() {
+	public void screenGUIToolMode() {
 		if (CreatorMinecraftScreen.movePositionScreenMode) {
 			resizeMode = rotateMode = pivotMode = inflateMode = false;
 			movePositionMode = true;
@@ -84,6 +89,7 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 			rotationYScreenGetter = modelPartData.rotationY;
 			rotationZScreenGetter = modelPartData.rotationZ;
 			inflateScreenGetter = modelPartData.inflate;
+			isVisibleGetter = modelPartData.isVisible;
 		}
 	}
 
@@ -105,7 +111,7 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 			modelPartData.rotationY = rotationYScreenGetter;
 			modelPartData.rotationZ = rotationZScreenGetter;
 			modelPartData.inflate = inflateScreenGetter;
-
+			modelPartData.isVisible = isVisibleGetter;
 			// Store the model part data at the specified slot
 			modelPartDataList.set(slot, modelPartData);
 		}
@@ -208,42 +214,42 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 	public void modelSlotRotationXIncrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationX += 1;
+			modelPartData.rotationX += (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
 	public void modelSlotRotationXDecrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationX -= 1;
+			modelPartData.rotationX -= (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
 	public void modelSlotRotationYIncrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationY += 1;
+			modelPartData.rotationY += (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
 	public void modelSlotRotationYDecrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationY -= 1;
+			modelPartData.rotationY -= (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
 	public void modelSlotRotationZIncrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationZ += 1;
+			modelPartData.rotationZ += (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
 	public void modelSlotRotationZDecrease(int slot) {
 		if (rotateMode && slot >= 0 && slot < modelPartDataList.size()) {
 			ModelPartData modelPartData = modelPartDataList.get(slot);
-			modelPartData.rotationZ -= 1;
+			modelPartData.rotationZ -= (float) ((2.5 * Math.PI) / 180);
 		}
 	}
 
@@ -407,28 +413,12 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 		}
 	}
 
-	public static void setModelSlotPivotX(float pivotXScreenInputValue) {
-		pivotXScreenGetter = pivotXScreenInputValue;
-	}
-
-	public static void setModelSlotPivotY(float pivotYScreenInputValue) {
-		pivotYScreenGetter = pivotYScreenInputValue;
-	}
-
-	public static void setModelSlotPivotZ(float pivotZScreenInputValue) {
-		pivotZScreenGetter = pivotZScreenInputValue;
-	}
-
-	public static void setModelSlotRotationX(float rotationXScreenInputValue) {
-		rotationXScreenGetter = rotationXScreenInputValue;
-	}
-
-	public static void setModelSlotRotationY(float rotationYScreenInputValue) {
-		rotationYScreenGetter = rotationYScreenInputValue;
-	}
-
-	public static void setModelSlotRotationZ(float rotationZScreenInputValue) {
-		rotationZScreenGetter = rotationZScreenInputValue;
+	public void setModelSlotVisible(int slot, boolean isVisibleGetterValue) {
+		isVisibleGetter = isVisibleGetterValue;
+		if (slot >= 0 && slot < modelPartDataList.size()) {
+			ModelPartData modelPartData = modelPartDataList.get(slot);
+			modelPartData.isVisible = isVisibleGetter;
+		}
 	}
 
 	public static float getModelSlotPositionX() {
@@ -483,6 +473,11 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 		return inflateScreenGetter;
 	}
 
+	public static boolean getModelSlotIsVisible() {
+		return isVisibleGetter;
+	}
+
+
 	public static int getModelListSize() {
 		return modelPartDataList.size();
 	}
@@ -491,14 +486,14 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 		return new int[]{modelPartDataList.size()};
 	}
 
-	private static class ModelPartData {
+	public static class ModelPartData {
 		public ModelPartBuilder main = new ModelPartBuilder();
-		private float positionX;
-		private float positionY;
-		private float positionZ;
-		private float sizeX;
-		private float sizeY;
-		private float sizeZ;
+		public float positionX = -1;
+		public float positionY;
+		public float positionZ = -1;
+		private float sizeX = 2;
+		private float sizeY = 2;;
+		private float sizeZ = 2;;
 		private float pivotX;
 		private float pivotY;
 		private float pivotZ;
@@ -506,12 +501,25 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 		private float rotationY;
 		private float rotationZ;
 		private float inflate;
+		boolean isVisible = true;
+
+		public float getCenterModelPartX() {
+			return this.positionX + this.sizeX / 2.0f;
+		}
+
+		public float getCenterModelPartY() {
+			return this.positionY + this.sizeY / 2.0f;
+		}
+
+		public float getCenterModelPartZ() {
+			return this.positionZ + this.sizeZ / 2.0f;
+		}
 	}
 
 	public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, int position) {
-		for (ModelPartData modelPartData : modelPartDataList) {
-			ModelObjectBase.renderOnce(modelPartData.main, matrices, vertexConsumers.getBuffer(RenderType.entitySmoothCutout(texture)), light, position);
-		}
+			for (ModelPartData modelPartData : modelPartDataList) {
+				ModelObjectBase.renderOnce(modelPartData.main, matrices, vertexConsumers.getBuffer(RenderType.entitySmoothCutout(texture)), light, position);
+			}
 		}
 
 	@Override

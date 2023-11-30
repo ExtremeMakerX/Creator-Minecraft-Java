@@ -50,9 +50,9 @@ public class CreatorMinecraftScreenSettings extends Screen implements CreatorIGU
         WidgetSetter.setAdjustableWidget(buttonExit, 0, height - STANDARD_SIZE, GIANT_SQUARE_SIZE * 2);
 
         addRenderableWidget(buttonThemeSettings);
-        addRenderableWidget(buttonKeyboardShortcuts);
-        addRenderableWidget(buttonAddonPluginManager);
-        addRenderableWidget(buttonDymanicRegistryManager);
+        //addRenderableWidget(buttonKeyboardShortcuts);
+       //addRenderableWidget(buttonAddonPluginManager);
+        //addRenderableWidget(buttonDymanicRegistryManager);
         addRenderableWidget(buttonExit);
     }
 

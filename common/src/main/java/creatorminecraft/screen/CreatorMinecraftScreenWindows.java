@@ -15,7 +15,7 @@ public class CreatorMinecraftScreenWindows implements CreatorIGUI {
         final int rightSideX = width - BIG_SQUARE_SIZE * 4;
         int GuiX = width - 175;
         int GuiY = STANDARD_SIZE * 9 + 10;
-        int sizeWidth = 170;
+        int sizeWidth = 180;
         int sizeHeight = 400;
 
         guiGraphics.fill(width - BIG_SQUARE_SIZE * 4 - STANDARD_SIZE, 0, width + 20, height, ARGB_DARK_BLACK);

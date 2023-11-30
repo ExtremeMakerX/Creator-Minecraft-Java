@@ -6,12 +6,12 @@ import creatorminecraft.client.WidgetSetter;
 import creatorminecraft.client.CreatorIGUI;
 import creatorminecraft.gui.CreatorMinecraftEditBox;
 import creatorminecraft.gui.ModelOutlinerList;
-import creatorminecraft.model.DynamicEntityModelEditing;
-import creatorminecraft.model.GridModel;
-import creatorminecraft.model.ModelXZPlane;
+import creatorminecraft.gui.ThemeSelectorList;
+import creatorminecraft.model.*;
 import creatorminecraft.render.GraphicsRender;
 import creatorminecraft.widgets.DynamicButtonCMJ;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,8 +21,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.event.MouseWheelEvent;
+
 public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
-;
+
     private final DynamicButtonCMJ buttonFileSettings;
     private final DynamicButtonCMJ buttonEditSettings;
     private final DynamicButtonCMJ buttonViewerSettings;
@@ -32,11 +34,11 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     public CreatorScreenManager creatorScreenManager = new CreatorScreenManager();
     private final CreatorMinecraftScreenWindows creatorMinecraftScreenWindows = new CreatorMinecraftScreenWindows();
     private final ModelOutlinerList modelOutlinerList = new ModelOutlinerList();
-    public static float cameraYaw;
-    public static float cameraPitch;
-    public static double cameraX;
-    public static double cameraY;
-    public static double cameraZ;
+    public static float cameraYaw = 90;
+    public static float cameraPitch = 220;
+    public static double cameraX = 0;
+    public static double cameraY = 0;
+    public static double cameraZ = 17.5;
     public static boolean GUI_RENDER_GRAPHICS;
     public static boolean movePositionScreenMode;
     public static boolean resizeScreenMode;
@@ -56,6 +58,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     private static float rotationYScreenValue;
     private static float rotationZScreenValue;
     private static float inflateScreenValue;
+    private static float isVisibleScreenValue;
     public final CreatorMinecraftEditBox textFieldPosX;
     public final CreatorMinecraftEditBox textFieldPosY;
     public final CreatorMinecraftEditBox textFieldPosZ;
@@ -72,9 +75,27 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     public final ImageButton buttonCreateModelIcon;
     public final ImageButton buttonCreateFolderIcon;
     private final ImageButton buttonExitModelEditor;
+    private final ImageButton buttonModelPartPositionIcon;
+    private final ImageButton buttonModelPartSizeIcon;
+    private final ImageButton buttonModelPartRotationIcon;
     public DynamicEntityModelEditing dynamicEntityModelEditing = new DynamicEntityModelEditing();
+    public static boolean isModelEditing;
     public static boolean isModelEditGui;
-    
+    public static int modelPartTarget = 0;
+    public boolean EDITING_X_MODE_MOUSE_X;
+    public boolean EDITING_X_MODE_MOUSE_Y;
+    public boolean EDITING_Y_MODE_MOUSE_Y;
+    public boolean EDITING_Z_MODE_MOUSE_X;
+    public boolean EDITING_Z_MODE_MOUSE_Y;
+    private boolean mouseXMovingRight;
+    private boolean mouseXMovingLeft;
+    private boolean mouseYMovingUp;
+    private boolean mouseYMovingDown;
+    private boolean isReversedX;
+    private boolean isReversedZ;
+    private double mouseXLast;
+    private double mouseYLast;
+
     public CreatorMinecraftScreen() {
         super(Component.empty());
         buttonFileSettings = new DynamicButtonCMJ(0, 0, 0, 20, Component.literal("File"), button -> creatorScreenManager.onFileMenu(), DynamicButtonCMJ.DEFAULT_NARRATION);
@@ -108,6 +129,24 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         });
         buttonCreateFolderIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/icon_add_folder.png"), 20, 40, button -> {
         });
+        buttonModelPartPositionIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_move_icon.png"), 20, 40, button -> {
+            movePositionScreenMode = true;
+            resizeScreenMode = false;
+            rotateScreenMode = false;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        });
+        buttonModelPartSizeIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_resize_icon.png"), 20, 40, button -> {
+            resizeScreenMode = true;
+            movePositionScreenMode = false;
+            rotateScreenMode = false;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        });
+        buttonModelPartRotationIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_rotation_icon.png"), 20, 40, button -> {
+            rotateScreenMode = true;
+            movePositionScreenMode = false;
+            resizeScreenMode = false;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        });
         new CreatorScreenManager();
     }
 
@@ -115,19 +154,14 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     protected void init() {
         final int rightSideX = width - BIG_SQUARE_SIZE * 4;
         final int standardMenuWidth = width / 3 + BIG_SQUARE_SIZE;
-        int adaptToNewUIInt = 0;
-        cameraYaw = 90;
-        cameraPitch = 220;
-        cameraX = 0;
-        cameraY = 0;
-        cameraZ = 17.5;
-        onModelEditGui(false);
-        WidgetSetter.setAdjustableWidget(buttonFileSettings, adaptToNewUIInt, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonEditSettings, adaptToNewUIInt + standardMenuWidth / 4, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonViewerSettings, adaptToNewUIInt + standardMenuWidth / 4 * 2, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonRenderSettings, adaptToNewUIInt + standardMenuWidth / 4 * 3, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonWindowSettings, adaptToNewUIInt + standardMenuWidth / 4 * 4, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonSettings, adaptToNewUIInt + standardMenuWidth / 4 * 5, 0, standardMenuWidth / 4);
+        int UIDynamicX = 0;
+        //onModelEditGui(false);
+        WidgetSetter.setAdjustableWidget(buttonFileSettings, UIDynamicX, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonEditSettings, UIDynamicX + standardMenuWidth / 4, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonViewerSettings, UIDynamicX + standardMenuWidth / 4 * 2, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonRenderSettings, UIDynamicX + standardMenuWidth / 4 * 3, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonWindowSettings, UIDynamicX + standardMenuWidth / 4 * 4, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonSettings, UIDynamicX + standardMenuWidth / 4 * 5, 0, standardMenuWidth / 4);
 
         WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonNewProject, 0, STANDARD_SIZE, standardMenuWidth / 4);
         WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonSaveProject, 0, STANDARD_SIZE * 2, standardMenuWidth / 4);
@@ -162,8 +196,12 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
         WidgetSetter.setAdjustableWidget(buttonExitModelEditor, rightSideX + BIG_SQUARE_SIZE * 3, STANDARD_SIZE + 5, STANDARD_SIZE);
 
-        WidgetSetter.setAdjustableWidget(buttonCreateModelIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 + STANDARD_SIZE + 2 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
-        WidgetSetter.setAdjustableWidget(buttonCreateFolderIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonCreateModelIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
+        //WidgetSetter.setAdjustableWidget(buttonCreateFolderIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
+
+        WidgetSetter.setAdjustableWidget(buttonModelPartPositionIcon, UIDynamicX, STANDARD_SIZE, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonModelPartSizeIcon, UIDynamicX + STANDARD_SIZE, STANDARD_SIZE, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonModelPartRotationIcon, UIDynamicX + STANDARD_SIZE * 2, STANDARD_SIZE, STANDARD_SIZE);
 
         addRenderableWidget(buttonFileSettings);
         addRenderableWidget(buttonEditSettings);
@@ -172,22 +210,22 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         addRenderableWidget(buttonWindowSettings);
         addRenderableWidget(buttonSettings);
 
-        addRenderableWidget(creatorScreenManager.buttonNewProject);
-        addRenderableWidget(creatorScreenManager.buttonSaveProject);
-        addRenderableWidget(creatorScreenManager.buttonSaveAsProject);
+        //addRenderableWidget(creatorScreenManager.buttonNewProject);
+        //addRenderableWidget(creatorScreenManager.buttonSaveProject);
+        //addRenderableWidget(creatorScreenManager.buttonSaveAsProject);
 
         addRenderableWidget(creatorScreenManager.buttonModelEditGui);
-        addRenderableWidget(creatorScreenManager.buttonBlockbenchMode);
+        //addRenderableWidget(creatorScreenManager.buttonBlockbenchMode);
 
         addRenderableWidget(creatorScreenManager.buttonCameraReset);
-        addRenderableWidget(creatorScreenManager.buttonScreenshotMode);
-        addRenderableWidget(creatorScreenManager.buttonPlayerCamera);
-        addRenderableWidget(creatorScreenManager.buttonExitScreenshotMode);
+        //addRenderableWidget(creatorScreenManager.buttonScreenshotMode);
+        //addRenderableWidget(creatorScreenManager.buttonPlayerCamera);
+        //addRenderableWidget(creatorScreenManager.buttonExitScreenshotMode);
 
-        addRenderableWidget(creatorScreenManager.buttonShaderRender);
-        addRenderableWidget(creatorScreenManager.buttonColorBlendRender);
+        //addRenderableWidget(creatorScreenManager.buttonShaderRender);
+        //addRenderableWidget(creatorScreenManager.buttonColorBlendRender);
 
-        addRenderableWidget(creatorScreenManager.buttonCameraPresets);
+        //addRenderableWidget(creatorScreenManager.buttonCameraPresets);
 
         addRenderableWidget(textFieldPosX);
         addRenderableWidget(textFieldPosY);
@@ -205,6 +243,9 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         addRenderableWidget(buttonExitModelEditor);
         addRenderableWidget(buttonCreateModelIcon);
         addRenderableWidget(buttonCreateFolderIcon);
+        addRenderableWidget(buttonModelPartPositionIcon);
+        addRenderableWidget(buttonModelPartSizeIcon);
+        addRenderableWidget(buttonModelPartRotationIcon);
         updateJavaModelPartPosition();
         modelOutlinerList.setVisible(true);
         if (minecraft != null) {
@@ -213,7 +254,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     }
 
     public void updateJavaModelPartPosition() {
-        dynamicEntityModelEditing.getModelSlotData(0);
+        dynamicEntityModelEditing.getModelSlotData(modelPartTarget);
         float posXModel = DynamicEntityModelEditing.getModelSlotPositionX();
         textFieldPosX.setValue(String.valueOf(posXModel));
         float posYModel = DynamicEntityModelEditing.getModelSlotPositionY();
@@ -320,146 +361,485 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         textFieldInflate.setValue(String.valueOf(inflateModel));
     }
 
+    public void updateJavaModelPartIsVisible(int slot) {
+        dynamicEntityModelEditing.getModelSlotData(slot);
+        boolean isVisibleModel = DynamicEntityModelEditing.getModelSlotIsVisible();
+    }
+
     public void setJavaModelPartPositionX() {
         positionXScreenValue = Float.parseFloat(textFieldPosX.getValue());
-        dynamicEntityModelEditing.setModelSlotPositionX(0, positionXScreenValue);
-        updateJavaModelPartPositionX(0);
+        dynamicEntityModelEditing.setModelSlotPositionX(modelPartTarget, positionXScreenValue);
+        updateJavaModelPartPositionX(modelPartTarget);
     }
 
     public void setJavaModelPartPositionY() {
         positionYScreenValue = Float.parseFloat(textFieldPosY.getValue());
-        dynamicEntityModelEditing.setModelSlotPositionY(0, positionYScreenValue);
-        updateJavaModelPartPositionY(0);
+        dynamicEntityModelEditing.setModelSlotPositionY(modelPartTarget, positionYScreenValue);
+        updateJavaModelPartPositionY(modelPartTarget);
     }
 
     public void setJavaModelPartPositionZ() {
         positionZScreenValue = Float.parseFloat(textFieldPosZ.getValue());
-        dynamicEntityModelEditing.setModelSlotPositionZ(0, positionZScreenValue);
-        updateJavaModelPartPositionZ(0);
+        dynamicEntityModelEditing.setModelSlotPositionZ(modelPartTarget, positionZScreenValue);
+        updateJavaModelPartPositionZ(modelPartTarget);
     }
 
     public void setJavaModelPartSizeX() {
         sizeXScreenValue = Float.parseFloat(textFieldSizeX.getValue());
-        dynamicEntityModelEditing.setModelSlotSizeX(0, sizeXScreenValue);
-        updateJavaModelPartSizeX(0);
+        dynamicEntityModelEditing.setModelSlotSizeX(modelPartTarget, sizeXScreenValue);
+        updateJavaModelPartSizeX(modelPartTarget);
     }
 
     public void setJavaModelPartSizeY() {
         sizeYScreenValue = Float.parseFloat(textFieldSizeY.getValue());
-        dynamicEntityModelEditing.setModelSlotSizeY(0, sizeYScreenValue);
-        updateJavaModelPartSizeY(0);
+        dynamicEntityModelEditing.setModelSlotSizeY(modelPartTarget, sizeYScreenValue);
+        updateJavaModelPartSizeY(modelPartTarget);
     }
 
     public void setJavaModelPartSizeZ() {
         sizeZScreenValue = Float.parseFloat(textFieldSizeZ.getValue());
-        dynamicEntityModelEditing.setModelSlotSizeZ(0, sizeZScreenValue);
-        updateJavaModelPartSizeZ(0);
+        dynamicEntityModelEditing.setModelSlotSizeZ(modelPartTarget, sizeZScreenValue);
+        updateJavaModelPartSizeZ(modelPartTarget);
     }
 
     public void setJavaModelPartPivotX() {
         pivotXScreenValue = Float.parseFloat(textFieldPivotX.getValue());
-        dynamicEntityModelEditing.setModelSlotPivotX(0, pivotXScreenValue);
-        updateJavaModelPartPivotX(0);
+        dynamicEntityModelEditing.setModelSlotPivotX(modelPartTarget, pivotXScreenValue);
+        updateJavaModelPartPivotX(modelPartTarget);
     }
 
     public void setJavaModelPartPivotY() {
         pivotYScreenValue = Float.parseFloat(textFieldPosY.getValue());
-        dynamicEntityModelEditing.setModelSlotPivotY(0, pivotYScreenValue);
-        updateJavaModelPartPivotY(0);
+        dynamicEntityModelEditing.setModelSlotPivotY(modelPartTarget, pivotYScreenValue);
+        updateJavaModelPartPivotY(modelPartTarget);
     }
 
     public void setJavaModelPartPivotZ() {
         pivotZScreenValue = Float.parseFloat(textFieldPosZ.getValue());
-        dynamicEntityModelEditing.setModelSlotPivotZ(0, pivotZScreenValue);
-        updateJavaModelPartPivotZ(0);
+        dynamicEntityModelEditing.setModelSlotPivotZ(modelPartTarget, pivotZScreenValue);
+        updateJavaModelPartPivotZ(modelPartTarget);
     }
 
     public void setJavaModelPartRotationX() {
         rotationXScreenValue = Float.parseFloat(textFieldRotationX.getValue());
-        dynamicEntityModelEditing.setModelSlotRotationX(0, rotationXScreenValue);
-        updateJavaModelPartRotationX(0);
+        dynamicEntityModelEditing.setModelSlotRotationX(modelPartTarget, rotationXScreenValue);
+        updateJavaModelPartRotationX(modelPartTarget);
     }
 
     public void setJavaModelPartRotationY() {
         rotationYScreenValue = Float.parseFloat(textFieldRotationY.getValue());
-        dynamicEntityModelEditing.setModelSlotRotationY(0, rotationYScreenValue);
-        updateJavaModelPartRotationY(0);
+        dynamicEntityModelEditing.setModelSlotRotationY(modelPartTarget, rotationYScreenValue);
+        updateJavaModelPartRotationY(modelPartTarget);
     }
 
     public void setJavaModelPartRotationZ() {
         rotationZScreenValue = Float.parseFloat(textFieldRotationZ.getValue());
-        dynamicEntityModelEditing.setModelSlotRotationZ(0, rotationZScreenValue);
-        updateJavaModelPartRotationZ(0);
+        dynamicEntityModelEditing.setModelSlotRotationZ(modelPartTarget, rotationZScreenValue);
+        updateJavaModelPartRotationZ(modelPartTarget);
     }
 
     public void setJavaModelPartInflate() {
         inflateScreenValue = Float.parseFloat(textFieldInflate.getValue());
-        dynamicEntityModelEditing.setModelSlotInflate(0, inflateScreenValue);
-        updateJavaModelPartInflate(0);
+        dynamicEntityModelEditing.setModelSlotInflate(modelPartTarget, inflateScreenValue);
+        updateJavaModelPartInflate(modelPartTarget);
     }
 
     @Override
-    public boolean mouseDragged(double d, double e, int i, double f, double g) {
-        if (i == 0) {
-            cameraYaw -= (float) f * 0.5f;
-            cameraPitch += (float) g * 0.55f;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        modelOutlinerList.mouseClicked(mouseX, mouseY, button);
+        setFocused(false);
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        modelOutlinerList.mouseMoved(mouseX, mouseY);
+        new ModelPartBuilder.CubeMouseDetection((int) mouseX, (int) mouseY);
+        super.mouseMoved(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        mouseXMovingRight = deltaX > 0;
+        mouseXMovingLeft = deltaX < 0;
+
+        mouseYMovingUp = deltaY > 0;
+        mouseYMovingDown = deltaY < 0;
+
+        if (mouseX > mouseXLast) {
+            mouseXMovingRight = true;
+        } else if (mouseX < mouseXLast) {
+            mouseXMovingLeft = true;
+        } else {
+            mouseXMovingRight = false;
+            mouseXMovingLeft = false;
         }
-        if (i == 1) {
-            cameraX -= (float) f * 0.1f;
-            cameraY += (float) g * 0.1f;
+
+        if (mouseY > mouseYLast) {
+            mouseYMovingUp = true;
+        } else if (mouseY < mouseYLast) {
+            mouseYMovingDown = true;
+        } else {
+            mouseYMovingUp = false;
+            mouseYMovingDown = false;
         }
-        return super.mouseDragged(d, e, i, f, g);
+
+
+        if (isModelEditing && isModelEditGui) {
+            if (EDITING_X_MODE_MOUSE_X) {
+                if (movePositionScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotPositionXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionX(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotPositionXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionXDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionX(modelPartTarget);
+                    }
+                } else if (resizeScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotSizeXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeX(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotSizeXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeXDecrease(modelPartTarget);
+
+                        }
+                        updateJavaModelPartSizeX(modelPartTarget);
+                    }
+                } else if (rotateScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotRotationXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationX(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotRotationXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationXDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationX(modelPartTarget);
+                    }
+                }
+            }
+            if (EDITING_X_MODE_MOUSE_Y) {
+                if (movePositionScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotPositionXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionX(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotPositionXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionXDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionX(modelPartTarget);
+                    }
+                } else if (resizeScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotSizeXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeX(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotSizeXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeXDecrease(modelPartTarget);
+
+                        }
+                        updateJavaModelPartSizeX(modelPartTarget);
+                    }
+                } else if (rotateScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotRotationXDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationXIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationX(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedX) {
+                            dynamicEntityModelEditing.modelSlotRotationXIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationXDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationX(modelPartTarget);
+                    }
+                }
+            }
+            if (EDITING_Y_MODE_MOUSE_Y) {
+                if (movePositionScreenMode) {
+                    if (mouseYMovingUp) {
+                        dynamicEntityModelEditing.modelSlotPositionYIncrease(modelPartTarget);
+                        updateJavaModelPartPositionY(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        dynamicEntityModelEditing.modelSlotPositionYDecrease(modelPartTarget);
+                        updateJavaModelPartPositionY(modelPartTarget);
+                    }
+                } else if (resizeScreenMode) {
+                    if (mouseYMovingUp) {
+                        dynamicEntityModelEditing.modelSlotSizeYIncrease(modelPartTarget);
+                        updateJavaModelPartSizeY(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        dynamicEntityModelEditing.modelSlotSizeYDecrease(modelPartTarget);
+                        updateJavaModelPartSizeY(modelPartTarget);
+                    }
+                } else if (rotateScreenMode) {
+                    if (mouseYMovingUp) {
+                        dynamicEntityModelEditing.modelSlotRotationYIncrease(modelPartTarget);
+                        updateJavaModelPartRotationY(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        dynamicEntityModelEditing.modelSlotRotationYDecrease(modelPartTarget);
+                        updateJavaModelPartRotationY(modelPartTarget);
+                    }
+                }
+            }
+            if (EDITING_Z_MODE_MOUSE_X) {
+                if (movePositionScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotPositionZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionZ(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotPositionZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionZ(modelPartTarget);
+                    }
+                } else if (resizeScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotSizeZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeZ(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotSizeZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeZ(modelPartTarget);
+                    }
+                } else if (rotateScreenMode) {
+                    if (mouseXMovingRight) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotRotationZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationZ(modelPartTarget);
+                    } else if (mouseXMovingLeft) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotRotationZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationZ(modelPartTarget);
+                    }
+                }
+            }
+            if (EDITING_Z_MODE_MOUSE_Y) {
+                if (movePositionScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotPositionZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionZ(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotPositionZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotPositionZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartPositionZ(modelPartTarget);
+                    }
+                } else if (resizeScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotSizeZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeZ(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotSizeZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotSizeZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartSizeZ(modelPartTarget);
+                    }
+                } else if (rotateScreenMode) {
+                    if (mouseYMovingUp) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotRotationZDecrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationZIncrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationZ(modelPartTarget);
+                    } else if (mouseYMovingDown) {
+                        if (isReversedZ) {
+                            dynamicEntityModelEditing.modelSlotRotationZIncrease(modelPartTarget);
+                        } else {
+                            dynamicEntityModelEditing.modelSlotRotationZDecrease(modelPartTarget);
+                        }
+                        updateJavaModelPartRotationZ(modelPartTarget);
+                    }
+                }
+            }
+        } else {
+            if (button == 0) {
+                cameraYaw -= (float) deltaX * 0.5f;
+                cameraPitch += (float) deltaY * 0.55f;
+            }
+            if (button == 1) {
+                cameraX -= (float) deltaX * 0.1f;
+                cameraY += (float) deltaY * 0.1f;
+            }
+        }
+        mouseXLast = mouseX;
+        mouseYLast = mouseY;
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    }
+
+    public void drawLiquidBar(GuiGraphics guiGraphics) {
+        PoseStack poseStack = new PoseStack();
+        poseStack.pushPose();
+        int width = 960;
+        int height = 54;
+        if (ThemeSelectorList.getUISkinExtraImageEnum() != null) {
+            guiGraphics.blit(new ResourceLocation("creatorminecraft:textures/gui/liquid_ui_black_bar.png"), 0, 0, 0, 0, width, height, width, height);
+        }
+        poseStack.popPose();
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        double sensitivity = 1.5;
-        cameraZ -= amount * sensitivity;
-        cameraZ = Math.max(cameraZ, -50.1f);
-        cameraZ = Math.min(cameraZ, 100.0f);
+        if (isModelEditing) {
+                if (amount < 0) {
+                    modelPartTarget += 1;
+                    if (modelPartTarget >= DynamicEntityModelEditing.getModelListSize()) {
+                        modelPartTarget = DynamicEntityModelEditing.getModelListSize() - 1;
+                    }
+                } else {
+                    modelPartTarget -= 1;
+                    if (modelPartTarget < 0) {
+                        modelPartTarget = 0;
+                    }
+                }
+        } else {
+            double sensitivity = 1.5;
+            cameraZ -= amount * sensitivity;
+            cameraZ = Math.max(cameraZ, -50.1f);
+            cameraZ = Math.min(cameraZ, 100.0f);
+        }
         return super.mouseScrolled(mouseX, mouseY, amount);
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float tickDelta) {
         final Minecraft minecraft = Minecraft.getInstance();
         final int rightSideX = width - BIG_SQUARE_SIZE * 4;
         minecraft.options.hideGui = true;
+        drawLiquidBar(guiGraphics);
         if (isModelEditGui) {
             onModelEditGui(true);
             creatorMinecraftScreenWindows.renderModelEditorGui(guiGraphics, font, height, width);
+            modelOutlinerList.renderHighlight(guiGraphics);
             modelOutlinerList.render(guiGraphics, font);
             modelOutlinerList.x = rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - BIG_SQUARE_SIZE - 30;
             modelOutlinerList.y = STANDARD_SIZE * 10 + 13;
+            System.out.println(cameraYaw);
+            //System.out.println(cameraPitch);
         } else {
             onModelEditGui(false);
         }
-        super.render(guiGraphics, i, j, f);
+        super.render(guiGraphics, mouseX, mouseY, tickDelta);
     }
-
-
 
     public static void render(PoseStack poseStack) {
         if (GUI_RENDER_GRAPHICS) {
             final Minecraft minecraft = Minecraft.getInstance();
             final MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();
             renderGraphicsBackground(poseStack, bufferSource);
+
             bufferSource.endBatch();
             poseStack.pushPose();
             poseStack.translate(-cameraX, -cameraY, -cameraZ);
             poseStack.mulPose(Axis.XP.rotationDegrees(cameraPitch));
             poseStack.mulPose(Axis.YP.rotationDegrees(cameraYaw));
             poseStack.mulPose(Axis.ZP.rotationDegrees((0)));
+
+            if (isModelEditGui) {
+                if (movePositionScreenMode) {
+                    poseStack.pushPose();
+                    MovementArrows movementArrows = new MovementArrows();
+                    poseStack.pushPose();
+                    poseStack.translate(0, 0, 0);
+                    movementArrows.render(poseStack, bufferSource, 0xF000F0, 0);
+                    poseStack.popPose();
+                } else if (resizeScreenMode) {
+                    poseStack.pushPose();
+                    ResizeArrows resizeArrows = new ResizeArrows();
+                    poseStack.pushPose();
+                    poseStack.translate(0, 0, 0);
+                    resizeArrows.render(poseStack, bufferSource, 0xF000F0, 0);
+                    poseStack.popPose();
+                } else if (rotateScreenMode) {
+                    poseStack.pushPose();
+                    RotationArrows rotationArrows = new RotationArrows();
+                    poseStack.pushPose();
+                    poseStack.translate(0, 0, 0);
+                    rotationArrows.render(poseStack, bufferSource, 0xF000F0, 0);
+                    poseStack.popPose();
+                }
+            }
+
+            poseStack.pushPose();
             DynamicEntityModelEditing dynamicEntityModelEditing = new DynamicEntityModelEditing();
             poseStack.pushPose();
             poseStack.translate(0, 0, 0);
             dynamicEntityModelEditing.render(poseStack, bufferSource, 0xF000F0, 0);
             poseStack.popPose();
+
             GridModel gridModel = new GridModel();
             poseStack.pushPose();
             poseStack.translate(0, 0, 0);
             gridModel.render(poseStack, bufferSource, 0xF600F0, 0);
             poseStack.popPose();
+
             ModelXZPlane modelXZPlane = new ModelXZPlane();
             poseStack.pushPose();
             poseStack.translate(0, 0.98f, 0);
@@ -476,6 +856,13 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+            super.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (keyCode == 256 && this.shouldCloseOnEsc()) {
+            this.onClose();
+            return true;
+        }
 
         if (keyCode == GLFW.GLFW_KEY_ENTER && textFieldPosX.isFocused()) {
             setJavaModelPartPositionX();
@@ -528,11 +915,240 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         if (keyCode == GLFW.GLFW_KEY_ENTER && textFieldInflate.isFocused()) {
             setJavaModelPartInflate();
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+
+        if (keyCode == GLFW.GLFW_KEY_UP) {
+            modelPartTarget -= 1;
+            if (modelPartTarget < 0) {
+                modelPartTarget = 0;
+            }
+            updateJavaModelPartPosition();
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_DOWN) {
+            modelPartTarget += 1;
+            if (modelPartTarget >= DynamicEntityModelEditing.getModelListSize()) {
+                modelPartTarget = DynamicEntityModelEditing.getModelListSize() - 1;
+            }
+            updateJavaModelPartPosition();
+        }
+        if (keyCode == GLFW.GLFW_KEY_TAB) {
+            isModelEditing = !isModelEditing;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_1) {
+            movePositionScreenMode = true;
+            resizeScreenMode = false;
+            rotateScreenMode = false;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        } else if (keyCode == GLFW.GLFW_KEY_2) {
+            movePositionScreenMode = false;
+            resizeScreenMode = true;
+            rotateScreenMode = false;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        } else if (keyCode == GLFW.GLFW_KEY_3) {
+            movePositionScreenMode = false;
+            resizeScreenMode = false;
+            rotateScreenMode = true;
+            dynamicEntityModelEditing.screenGUIToolMode();
+        }
+
+       /* if (keyCode == GLFW.GLFW_KEY_Q) {
+            EDITING_X_MODE_MOUSE_X = true;
+            EDITING_Y_MODE_MOUSE_Y = false;
+            EDITING_Z_MODE_MOUSE_X = false;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_W) {
+            EDITING_X_MODE_MOUSE_X = false;
+            EDITING_Y_MODE_MOUSE_Y = true;
+            EDITING_Z_MODE_MOUSE_X = false;
+        }
+
+        if (keyCode == GLFW.GLFW_KEY_E) {
+            EDITING_X_MODE_MOUSE_X = false;
+            EDITING_Y_MODE_MOUSE_Y = false;
+            EDITING_Z_MODE_MOUSE_X = true;
+        }*/
+
+        if (keyCode == GLFW.GLFW_KEY_DELETE) {
+            dynamicEntityModelEditing.removeModelSlot(modelPartTarget);
+            updateJavaModelPartPosition();
+        }
+        return false;
     }
 
     @Override
     public void tick() {
+
+        if (ModelOutlinerList.updateModelPartData) {
+            updateJavaModelPartPosition();
+            ModelOutlinerList.updateModelPartData = false;
+        }
+
+        if (creatorScreenManager.fileMenuState == 1) {
+            if (!buttonFileSettings.isHovered() && !creatorScreenManager.buttonNewProject.isHovered() && !creatorScreenManager.buttonSaveAsProject.isHovered() && !creatorScreenManager.buttonSaveProject.isHovered()) {
+                creatorScreenManager.onFileMenu();
+            }
+        }
+
+        if (creatorScreenManager.editMenuState == 1) {
+            if (!buttonEditSettings.isHovered() && !creatorScreenManager.buttonModelEditGui.isHovered() && !creatorScreenManager.buttonBlockbenchMode.isHovered()) {
+                creatorScreenManager.onEditMenu();
+            }
+        }
+
+        if (creatorScreenManager.viewMenuState == 1) {
+            if (!buttonViewerSettings.isHovered() && !creatorScreenManager.buttonScreenshotMode.isHovered() && !creatorScreenManager.buttonCameraReset.isHovered() && !creatorScreenManager.buttonPlayerCamera.isHovered()) {
+                creatorScreenManager.onViewMenu();
+            }
+        }
+
+        if (creatorScreenManager.renderMenuState == 1) {
+            if (!buttonRenderSettings.isHovered() && !creatorScreenManager.buttonShaderRender.isHovered() && !creatorScreenManager.buttonColorBlendRender.isHovered()) {
+                creatorScreenManager.onRenderMenu();
+            }
+        }
+
+        if (creatorScreenManager.windowMenuState == 1) {
+            if (!buttonWindowSettings.isHovered() && !creatorScreenManager.buttonCameraPresets.isHovered()) {
+                creatorScreenManager.onWindowMenu();
+            }
+        }
+
+        if (cameraPitch < 220) {
+            if (cameraYaw < 45) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = false;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = false;
+                isReversedZ = false;
+            } else if (cameraYaw < 90) {
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 135) {
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 180) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = false;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 225) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = false;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 270) {
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = false;
+                isReversedZ = true  ;
+            } else if (cameraYaw < 305) {
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = false;
+                isReversedZ = true;
+        } else if (cameraYaw < 350) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = true;
+                EDITING_Z_MODE_MOUSE_X = false;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = false;
+                isReversedZ = false;
+            }
+        } else if (cameraPitch < 310) {
+            if (cameraYaw < 45) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = false;
+                isReversedX = false;
+                isReversedZ = true;
+            } else if (cameraYaw < 90) {
+                EDITING_X_MODE_MOUSE_Y = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 135) {
+                EDITING_X_MODE_MOUSE_Y = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 180) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 225) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 270) {
+                EDITING_X_MODE_MOUSE_Y = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_X = false;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = true;
+                isReversedZ = false;
+            } else if (cameraYaw < 305) {
+                EDITING_X_MODE_MOUSE_Y = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Z_MODE_MOUSE_Y = false;
+                isReversedX = false;
+                isReversedZ = true;
+            } else if (cameraYaw < 350) {
+                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_Y_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_Y = true;
+                EDITING_X_MODE_MOUSE_Y = false;
+                EDITING_Z_MODE_MOUSE_X = false;
+                isReversedX = false;
+                isReversedZ = true;
+            }
+        }
+
         super.tick();
     }
 
@@ -567,6 +1183,9 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         textFieldInflate.visible = isModelEditGui;
         buttonCreateModelIcon.visible = isModelEditGui;
         buttonCreateFolderIcon.visible = isModelEditGui;
+        buttonModelPartPositionIcon.visible = isModelEditGui && creatorScreenManager.fileMenuState != 1;
+        buttonModelPartSizeIcon.visible = isModelEditGui && creatorScreenManager.fileMenuState != 1;
+        buttonModelPartRotationIcon.visible = isModelEditGui && creatorScreenManager.fileMenuState != 1;
         textFieldPivotX.visible = isModelEditGui;
         textFieldPivotY.visible = isModelEditGui;
         textFieldPivotZ.visible = isModelEditGui;
