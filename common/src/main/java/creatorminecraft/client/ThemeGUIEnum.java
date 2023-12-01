@@ -1,8 +1,8 @@
 package creatorminecraft.client;
 
 public enum ThemeGUIEnum implements CreatorIGUI {
-    LIQUID_UI("Liquid UI V1", "ExtremeMakerX", "creatorminecraft:textures/gui/liquid_ui_black_bar.png", "creatorminecraft:textures/gui/liquid_ui_v1_image.png", ARGB_DARK_GRAY, ""),
-    MINECRAFT_UI("Minecraft UI", "ExtremeMakerX", "", "creatorminecraft:textures/gui/minecraft_v1_image.png", ARGB_GRAY, "");
+    LIQUID_UI("Liquid UI V1", "ExtremeMakerX", "creatorminecraft:textures/gui/liquid_ui_black_bar.png", "creatorminecraft:textures/gui/liquid_ui_v1_image.png", ARGB_DARK_GRAY, "creatorminecraft:textures/gui/liquid_ui_black_bar.png", true),
+    MINECRAFT_UI("Minecraft UI", "ExtremeMakerX", "", "creatorminecraft:textures/gui/minecraft_v1_image.png", ARGB_GRAY, "", false);
 
     public final String UI_NAME;
     public final String AUTHOR;
@@ -10,13 +10,15 @@ public enum ThemeGUIEnum implements CreatorIGUI {
     public final String CUSTOM_IMAGE_THEME_WIDGET;
     public final int UI_BASE_COLOR;
     public final String UI_SKIN_EXTRA_IMAGE;
+    public final boolean EXPERIMENT_WIDGET_LIQUID_UI;
     ThemeGUIEnum(
         String UI_NAME,
         String AUTHOR,
         String UI_SKIN,
         String CUSTOM_IMAGE_THEME_WIDGET,
         int UI_BASE_COLOR,
-        String UI_SKIN_EXTRA_IMAGE
+        String UI_SKIN_EXTRA_IMAGE,
+        boolean EXPERIMENT_WIDGET_LIQUID_UI
      ) {
             this.UI_NAME = UI_NAME;
             this.AUTHOR = AUTHOR;
@@ -24,6 +26,7 @@ public enum ThemeGUIEnum implements CreatorIGUI {
             this.CUSTOM_IMAGE_THEME_WIDGET = CUSTOM_IMAGE_THEME_WIDGET;
             this.UI_BASE_COLOR = UI_BASE_COLOR;
             this.UI_SKIN_EXTRA_IMAGE = UI_SKIN_EXTRA_IMAGE;
+            this.EXPERIMENT_WIDGET_LIQUID_UI = EXPERIMENT_WIDGET_LIQUID_UI;
         }
 
     public ThemeGUIEnum[] getThemeGUIEnum() {
@@ -46,5 +49,8 @@ public enum ThemeGUIEnum implements CreatorIGUI {
     }
     public String getUISkinExtraImage() {
         return UI_SKIN_EXTRA_IMAGE;
+    }
+    public boolean getExperimentWidgetLiquidUI() {
+        return EXPERIMENT_WIDGET_LIQUID_UI;
     }
 }

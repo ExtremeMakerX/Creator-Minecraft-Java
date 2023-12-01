@@ -18,8 +18,8 @@ public class CreatorMinecraftScreenWindows implements CreatorIGUI {
         int sizeWidth = 180;
         int sizeHeight = 400;
 
-        guiGraphics.fill(width - BIG_SQUARE_SIZE * 4 - STANDARD_SIZE, 0, width + 20, height, ARGB_DARK_BLACK);
-        guiGraphics.fill(GuiX, GuiY, GuiX + sizeWidth, GuiY + sizeHeight,ARGB_DARK);
+        guiGraphics.fill(width - BIG_SQUARE_SIZE * 4 - STANDARD_SIZE, 0, width + 20, height, ARGB_BLACK);
+        guiGraphics.fill(GuiX, GuiY, GuiX + sizeWidth, GuiY + sizeHeight,ARGB_DARK_BLACK);
         guiGraphics.drawCenteredString(textRenderer, Component.translatable("gui.mtr.element_model_editor"), rightSideX + TINY_SQUARE, STANDARD_SIZE + 12, ARGB_WHITE);
 
         guiGraphics.drawCenteredString(textRenderer, Component.translatable("gui.mtr.position_model_editor"), rightSideX, STANDARD_SIZE * 3 + 5, ARGB_WHITE);

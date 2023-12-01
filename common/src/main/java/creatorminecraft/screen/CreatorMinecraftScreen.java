@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.event.MouseWheelEvent;
+import java.util.Objects;
 
 public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
@@ -155,30 +155,36 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         final int rightSideX = width - BIG_SQUARE_SIZE * 4;
         final int standardMenuWidth = width / 3 + BIG_SQUARE_SIZE;
         int UIDynamicX = 0;
-        //onModelEditGui(false);
-        WidgetSetter.setAdjustableWidget(buttonFileSettings, UIDynamicX, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonEditSettings, UIDynamicX + standardMenuWidth / 4, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonViewerSettings, UIDynamicX + standardMenuWidth / 4 * 2, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonRenderSettings, UIDynamicX + standardMenuWidth / 4 * 3, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonWindowSettings, UIDynamicX + standardMenuWidth / 4 * 4, 0, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(buttonSettings, UIDynamicX + standardMenuWidth / 4 * 5, 0, standardMenuWidth / 4);
+        int adaptToLiquidUI = 0;
+        int adaptToLiquidUIModelIcons = 0;
 
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonNewProject, 0, STANDARD_SIZE, standardMenuWidth / 4);
+        if (ThemeSelectorList.getUIWidgetIsLiquidUIEnum()) {
+            adaptToLiquidUI = 35;
+            adaptToLiquidUIModelIcons = 5;
+        }
+        WidgetSetter.setAdjustableWidget(buttonFileSettings, UIDynamicX + adaptToLiquidUI, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonEditSettings, UIDynamicX + standardMenuWidth / 4 + adaptToLiquidUI, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonViewerSettings, UIDynamicX + standardMenuWidth / 4 * 2 + adaptToLiquidUI, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonRenderSettings, UIDynamicX + standardMenuWidth / 4 * 3 + adaptToLiquidUI, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonWindowSettings, UIDynamicX + standardMenuWidth / 4 * 4 + adaptToLiquidUI, 0, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(buttonSettings, UIDynamicX + standardMenuWidth / 4 * 5 + adaptToLiquidUI, 0, standardMenuWidth / 4);
+
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonNewProject, 0 , STANDARD_SIZE, standardMenuWidth / 4);
         WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonSaveProject, 0, STANDARD_SIZE * 2, standardMenuWidth / 4);
         WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonSaveAsProject, 0, STANDARD_SIZE * 3, standardMenuWidth / 4);
 
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonModelEditGui, standardMenuWidth / 4, STANDARD_SIZE, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonBlockbenchMode, standardMenuWidth / 4, STANDARD_SIZE * 2, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonModelEditGui, standardMenuWidth / 4 + adaptToLiquidUI, STANDARD_SIZE, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonBlockbenchMode, standardMenuWidth / 4 + adaptToLiquidUI, STANDARD_SIZE * 2, standardMenuWidth / 4);
 
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonCameraReset, standardMenuWidth / 4 * 2, STANDARD_SIZE, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonScreenshotMode, standardMenuWidth / 4 * 2, STANDARD_SIZE * 2, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonPlayerCamera, standardMenuWidth / 4 * 2, STANDARD_SIZE * 3, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonCameraReset, standardMenuWidth / 4 * 2 + adaptToLiquidUI, STANDARD_SIZE, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonScreenshotMode, standardMenuWidth / 4 * 2 + adaptToLiquidUI, STANDARD_SIZE * 2, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonPlayerCamera, standardMenuWidth / 4 * 2 + adaptToLiquidUI, STANDARD_SIZE * 3, standardMenuWidth / 4);
         //ButtonSetter.setPositionAndWidth(creatorScreenManager.buttonExitScreenshotMode, standardMenuWidth / 4 * 2, STANDARD_SIZE * 4, standardMenuWidth / 4);
 
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonShaderRender, standardMenuWidth / 4 * 3, STANDARD_SIZE, standardMenuWidth / 4);
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonColorBlendRender, standardMenuWidth / 4 * 3, STANDARD_SIZE * 2, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonShaderRender, standardMenuWidth / 4 * 3 + adaptToLiquidUI, STANDARD_SIZE, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonColorBlendRender, standardMenuWidth / 4 * 3 + adaptToLiquidUI, STANDARD_SIZE * 2, standardMenuWidth / 4);
 
-        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonCameraPresets, standardMenuWidth / 4 * 4, STANDARD_SIZE, standardMenuWidth / 4);
+        WidgetSetter.setAdjustableWidget(creatorScreenManager.buttonCameraPresets, standardMenuWidth / 4 * 4 + adaptToLiquidUI, STANDARD_SIZE, standardMenuWidth / 4);
 
         WidgetSetter.setAdjustableWidget(textFieldPosX, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3, STANDARD_SIZE * 3, STANDARD_SIZE * 2);
         WidgetSetter.setAdjustableWidget(textFieldPosY, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 2, STANDARD_SIZE * 3, STANDARD_SIZE * 2);
@@ -199,9 +205,9 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         WidgetSetter.setAdjustableWidget(buttonCreateModelIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
         //WidgetSetter.setAdjustableWidget(buttonCreateFolderIcon, rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - 30, STANDARD_SIZE * 8 + 6, STANDARD_SIZE);
 
-        WidgetSetter.setAdjustableWidget(buttonModelPartPositionIcon, UIDynamicX, STANDARD_SIZE, STANDARD_SIZE);
-        WidgetSetter.setAdjustableWidget(buttonModelPartSizeIcon, UIDynamicX + STANDARD_SIZE, STANDARD_SIZE, STANDARD_SIZE);
-        WidgetSetter.setAdjustableWidget(buttonModelPartRotationIcon, UIDynamicX + STANDARD_SIZE * 2, STANDARD_SIZE, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonModelPartPositionIcon, UIDynamicX, STANDARD_SIZE + adaptToLiquidUIModelIcons, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonModelPartSizeIcon, UIDynamicX + STANDARD_SIZE, STANDARD_SIZE + adaptToLiquidUIModelIcons, STANDARD_SIZE);
+        WidgetSetter.setAdjustableWidget(buttonModelPartRotationIcon, UIDynamicX + STANDARD_SIZE * 2, STANDARD_SIZE + adaptToLiquidUIModelIcons, STANDARD_SIZE);
 
         addRenderableWidget(buttonFileSettings);
         addRenderableWidget(buttonEditSettings);
@@ -735,15 +741,21 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
     }
 
     public void drawLiquidBar(GuiGraphics guiGraphics) {
-        PoseStack poseStack = new PoseStack();
-        poseStack.pushPose();
         int width = 960;
         int height = 54;
-        if (ThemeSelectorList.getUISkinExtraImageEnum() != null) {
+        if (Objects.equals(ThemeSelectorList.getUISkinExtraImageEnum(), "creatorminecraft:textures/gui/liquid_ui_black_bar.png")) {
             guiGraphics.blit(new ResourceLocation("creatorminecraft:textures/gui/liquid_ui_black_bar.png"), 0, 0, 0, 0, width, height, width, height);
         }
-        poseStack.popPose();
     }
+
+    public void drawLiquidBarIcon(GuiGraphics guiGraphics) {
+        int width = 15;
+        int height = 17;
+        if (Objects.equals(ThemeSelectorList.getUISkinExtraImageEnum(), "creatorminecraft:textures/gui/liquid_ui_black_bar.png")) {
+            guiGraphics.blit(new ResourceLocation("creatorminecraft:textures/gui/model_creator_icon.png"), 5, 4, 0, 0, width, height, width, height);
+        }
+    }
+
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
@@ -774,6 +786,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         final int rightSideX = width - BIG_SQUARE_SIZE * 4;
         minecraft.options.hideGui = true;
         drawLiquidBar(guiGraphics);
+        drawLiquidBarIcon(guiGraphics);
         if (isModelEditGui) {
             onModelEditGui(true);
             creatorMinecraftScreenWindows.renderModelEditorGui(guiGraphics, font, height, width);
@@ -781,7 +794,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
             modelOutlinerList.render(guiGraphics, font);
             modelOutlinerList.x = rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - BIG_SQUARE_SIZE - 30;
             modelOutlinerList.y = STANDARD_SIZE * 10 + 13;
-            System.out.println(cameraYaw);
+            //System.out.println(cameraYaw);
             //System.out.println(cameraPitch);
         } else {
             onModelEditGui(false);

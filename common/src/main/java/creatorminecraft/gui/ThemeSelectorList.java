@@ -19,7 +19,9 @@ public class ThemeSelectorList implements CreatorIGUI {
 
     private final String[] customImageThemeWidget = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getCustomImageThemeWidget).toArray(String[]::new);
     private final String[] UISkinExtraImage = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getUISkinExtraImage).toArray(String[]::new);
-    private static String getUISkinExtraImage;
+    private final Boolean[] UIWidgetisLiquidUI = Arrays.stream(ThemeGUIEnum.values()).map(ThemeGUIEnum::getExperimentWidgetLiquidUI).toArray(Boolean[]::new);
+    private static String getUISkinExtraImage = "creatorminecraft:textures/gui/liquid_ui_black_bar.png";
+    private static Boolean getUIWidgetisLiquidUI = true;
     private final int THEME_WIDGET_SLOT_SIZE = 160;
     private final int WIDGET_POSITION = THEME_WIDGET_SLOT_SIZE - BIG_SQUARE_SIZE;
     private boolean isVisible;
@@ -29,9 +31,7 @@ public class ThemeSelectorList implements CreatorIGUI {
         if (isVisible && screenWidthCenterTarget != 0) {
             for (int i = 0; i < 2; i++) {
                 final int drawX = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION + screenWidthCenterTarget;
-                if (isHoveredOver[i]) {
-                    drawThemeWidget(guiGraphics, textRenderer, x + drawX, y + screenHeightCenterTarget, i);
-                }
+                drawThemeWidget(guiGraphics, textRenderer, x + drawX, y + screenHeightCenterTarget, i);
             }
         }
     }
@@ -66,23 +66,23 @@ public class ThemeSelectorList implements CreatorIGUI {
         if (button == 0) {
         for (int i = 0; i < 2; i++) {
             final int drawX = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION + screenWidthCenterTarget;
-            if (mouseX >= x + drawX && mouseX < x + drawX + STANDARD_SIZE * 3 && mouseY >= y + WIDGET_POSITION && mouseY < y + WIDGET_POSITION + THEME_WIDGET_SLOT_SIZE) {
-                isHoveredOver[i] = true;
+            if (mouseX >= x + drawX && mouseX < x + drawX + 140 && mouseY >= y + WIDGET_POSITION && mouseY < y + WIDGET_POSITION + THEME_WIDGET_SLOT_SIZE) {
                 getUISkinExtraImage = UISkinExtraImage[i];
+                getUIWidgetisLiquidUI = UIWidgetisLiquidUI[i];
             }
             }
         }
     }
 
     public void mouseMoved(double mouseX, double mouseY) {
-       /* for (int i = 0; i < 2; i++) {
-            final int drawX = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION + screenWidthCenterTarget;
-            if (mouseX >= x + drawX && mouseX < x + drawX + STANDARD_SIZE * 3 && mouseY >= y + WIDGET_POSITION && mouseY < y + WIDGET_POSITION + THEME_WIDGET_SLOT_SIZE) {
-                isHoveredOver = true;
+        for (int i = 0; i < 2; i++) {
+            final int drawX = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION + screenWidthCenterTarget - 35;
+            if (mouseX >= x + drawX && mouseX < x + drawX + 140 && mouseY >= y + 40 + WIDGET_POSITION && mouseY < y + 40 + WIDGET_POSITION + THEME_WIDGET_SLOT_SIZE) {
+                isHoveredOver[i] = true;
             } else {
-                isHoveredOver = false;
+                isHoveredOver[i] = false;
             }
-        }*/
+        }
     }
     public void setVisible(boolean visible) {
         this.isVisible = visible;
@@ -90,5 +90,9 @@ public class ThemeSelectorList implements CreatorIGUI {
 
     public static String getUISkinExtraImageEnum() {
         return getUISkinExtraImage;
+    }
+
+    public static Boolean getUIWidgetIsLiquidUIEnum() {
+        return getUIWidgetisLiquidUI;
     }
 }
