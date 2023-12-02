@@ -7,6 +7,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import org.lwjgl.glfw.GLFW;
 
 public class ModelOutlinerList implements CreatorIGUI {
 
@@ -53,16 +54,8 @@ public class ModelOutlinerList implements CreatorIGUI {
                 if (mouseX >= x + BIG_SQUARE_SIZE - 5 && mouseX < x + THEME_WIDGET_SLOT_SIZE + SUPER_GIANT_SQUARE_SIZE + GIANT_SQUARE_SIZE * 3 && mouseY >= y + drawY && mouseY < y + drawY + THEME_WIDGET_SLOT_SIZE) {
                     CreatorMinecraftScreen.modelPartTarget = i;
                     updateModelPartData = true;
-                    System.out.println("Testing 1 2 3");
                 }
             }
-        }
-    }
-
-    public void mouseMoved(double mouseX, double mouseY) {
-        for (int i = 0; i < DynamicEntityModelEditing.getModelListSize(); i++) {
-            final int drawY = THEME_WIDGET_SLOT_SIZE * i + WIDGET_POSITION;
-            //isHoveredOver[i] = mouseX >= x + WIDGET_POSITION && mouseX < x + WIDGET_POSITION + STANDARD_SIZE * 3 && mouseY >= y + drawY && mouseY < y + drawY + THEME_WIDGET_SLOT_SIZE;
         }
     }
 

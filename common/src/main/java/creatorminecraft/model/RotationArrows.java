@@ -40,6 +40,7 @@ public class RotationArrows extends EntityModel<Entity> {
 			if (modelPartData.isVisible) {
 				red_circle = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
 				red_circle.setPos(modelPartData.getCenterModelPartX(), modelPartData.getCenterModelPartY(), modelPartData.getCenterModelPartZ());
+				red_circle.setRotationAngle(modelPartData.getCenterModelPartRotationX(), modelPartData.getCenterModelPartRotationY(), modelPartData.getCenterModelPartRotationZ());
 				red_circle.texOffs(0, 0).addBox(-9.9456F, 50.0F, -1.0F, 19.8912F, 0.0F, 2.0F, 0.0F, false);
 				red_circle.texOffs(0, 0).addBox(-9.9456F, -50.0F, -1.0F, 19.8912F, 0.0F, 2.0F, 0.0F, false);
 				red_circle.texOffs(0, 0).addBox(50.0F, -9.9456F, -1.0F, 0.0F, 19.8912F, 2.0F, 0.0F, false);
@@ -79,6 +80,7 @@ public class RotationArrows extends EntityModel<Entity> {
 
 				blue_circle = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
 				blue_circle.setPos(modelPartData.getCenterModelPartX(), modelPartData.getCenterModelPartY(), modelPartData.getCenterModelPartZ());
+				blue_circle.setRotationAngle(modelPartData.getCenterModelPartRotationX(), modelPartData.getCenterModelPartRotationY(), modelPartData.getCenterModelPartRotationZ());
 				blue_circle.texOffs(0, 0).addBox(-1.0F, -9.9456F, -50.0F, 2.0F, 19.8912F, 0.0F, 0.0F, false);
 				blue_circle.texOffs(0, 0).addBox(-1.0F, -9.9456F, 50.0F, 2.0F, 19.8912F, 0.0F, 0.0F, false);
 				blue_circle.texOffs(0, 0).addBox(-1.0F, 50.0F, -9.9456F, 2.0F, 0.0F, 19.8912F, 0.0F, false);
@@ -118,6 +120,7 @@ public class RotationArrows extends EntityModel<Entity> {
 
 				green_circle = new ModelPartBuilder(new ModelExtender(resourceLocation -> RenderType.solid(), this, textureWidth, textureHeight));
 				green_circle.setPos(modelPartData.getCenterModelPartX(), modelPartData.getCenterModelPartY(), modelPartData.getCenterModelPartZ());
+				green_circle.setRotationAngle(modelPartData.getCenterModelPartRotationX(), modelPartData.getCenterModelPartRotationY(), modelPartData.getCenterModelPartRotationZ());
 				green_circle.texOffs(0, 0).addBox(-9.9456F, -1.0F, -50.0F, 19.8912F, 2.0F, 0.0F, 0.0F, false);
 				green_circle.texOffs(0, 0).addBox(-9.9456F, -1.0F, 50.0F, 19.8912F, 2.0F, 0.0F, 0.0F, false);
 				green_circle.texOffs(0, 0).addBox(50.0F, -1.0F, -9.9456F, 0.0F, 2.0F, 19.8912F, 0.0F, false);

@@ -500,7 +500,7 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 		private float rotationX;
 		private float rotationY;
 		private float rotationZ;
-		private float inflate;
+		public float inflate;
 		boolean isVisible = true;
 
 		public float getCenterModelPartX() {
@@ -513,6 +513,18 @@ public class DynamicEntityModelEditing extends EntityModel<Entity> {
 
 		public float getCenterModelPartZ() {
 			return this.positionZ + this.sizeZ / 2.0f;
+		}
+
+		public float getCenterModelPartRotationX() {
+			return this.rotationX;
+		}
+
+		public float getCenterModelPartRotationY() {
+			return this.rotationY;
+		}
+
+		public float getCenterModelPartRotationZ() {
+			return this.rotationZ;
 		}
 	}
 

@@ -11,7 +11,6 @@ import creatorminecraft.model.*;
 import creatorminecraft.render.GraphicsRender;
 import creatorminecraft.widgets.DynamicButtonCMJ;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -459,7 +458,6 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
-        modelOutlinerList.mouseMoved(mouseX, mouseY);
         new ModelPartBuilder.CubeMouseDetection((int) mouseX, (int) mouseY);
         super.mouseMoved(mouseX, mouseY);
     }
@@ -759,7 +757,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
-        if (isModelEditing) {
+        if (isModelEditing && isModelEditGui) {
                 if (amount < 0) {
                     modelPartTarget += 1;
                     if (modelPartTarget >= DynamicEntityModelEditing.getModelListSize()) {
@@ -794,8 +792,6 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
             modelOutlinerList.render(guiGraphics, font);
             modelOutlinerList.x = rightSideX + BIG_SQUARE_SIZE * 3 + STANDARD_SIZE - STANDARD_SIZE * 2 * 3 - BIG_SQUARE_SIZE - 30;
             modelOutlinerList.y = STANDARD_SIZE * 10 + 13;
-            //System.out.println(cameraYaw);
-            //System.out.println(cameraPitch);
         } else {
             onModelEditGui(false);
         }
@@ -965,24 +961,6 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
             dynamicEntityModelEditing.screenGUIToolMode();
         }
 
-       /* if (keyCode == GLFW.GLFW_KEY_Q) {
-            EDITING_X_MODE_MOUSE_X = true;
-            EDITING_Y_MODE_MOUSE_Y = false;
-            EDITING_Z_MODE_MOUSE_X = false;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_W) {
-            EDITING_X_MODE_MOUSE_X = false;
-            EDITING_Y_MODE_MOUSE_Y = true;
-            EDITING_Z_MODE_MOUSE_X = false;
-        }
-
-        if (keyCode == GLFW.GLFW_KEY_E) {
-            EDITING_X_MODE_MOUSE_X = false;
-            EDITING_Y_MODE_MOUSE_Y = false;
-            EDITING_Z_MODE_MOUSE_X = true;
-        }*/
-
         if (keyCode == GLFW.GLFW_KEY_DELETE) {
             dynamicEntityModelEditing.removeModelSlot(modelPartTarget);
             updateJavaModelPartPosition();
@@ -1029,6 +1007,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         }
 
         if (cameraPitch < 220) {
+            cameraYaw %= 360;
             if (cameraYaw < 45) {
                 EDITING_X_MODE_MOUSE_X = true;
                 EDITING_Y_MODE_MOUSE_Y = true;
@@ -1094,7 +1073,12 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
                 isReversedX = false;
                 isReversedZ = false;
             }
+            if (cameraYaw < 0) {
+                cameraYaw += 360;
+            }
+            cameraYaw %= 360;
         } else if (cameraPitch < 310) {
+            cameraYaw %= 360;
             if (cameraYaw < 45) {
                 EDITING_X_MODE_MOUSE_X = true;
                 EDITING_Y_MODE_MOUSE_Y = false;
@@ -1109,7 +1093,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
                 EDITING_Z_MODE_MOUSE_X = true;
                 EDITING_X_MODE_MOUSE_X = false;
                 EDITING_Z_MODE_MOUSE_Y = false;
-                isReversedX = true;
+                isReversedX = false;
                 isReversedZ = false;
             } else if (cameraYaw < 135) {
                 EDITING_X_MODE_MOUSE_Y = true;
@@ -1117,7 +1101,7 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
                 EDITING_Z_MODE_MOUSE_X = true;
                 EDITING_X_MODE_MOUSE_X = false;
                 EDITING_Z_MODE_MOUSE_Y = false;
-                isReversedX = true;
+                isReversedX = false;
                 isReversedZ = false;
             } else if (cameraYaw < 180) {
                 EDITING_X_MODE_MOUSE_X = true;
@@ -1142,14 +1126,14 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
                 EDITING_X_MODE_MOUSE_X = false;
                 EDITING_Z_MODE_MOUSE_Y = false;
                 isReversedX = true;
-                isReversedZ = false;
+                isReversedZ = true;
             } else if (cameraYaw < 305) {
                 EDITING_X_MODE_MOUSE_Y = true;
                 EDITING_Y_MODE_MOUSE_Y = false;
                 EDITING_Z_MODE_MOUSE_X = true;
-                EDITING_X_MODE_MOUSE_X = true;
+                EDITING_X_MODE_MOUSE_X = false;
                 EDITING_Z_MODE_MOUSE_Y = false;
-                isReversedX = false;
+                isReversedX = true;
                 isReversedZ = true;
             } else if (cameraYaw < 350) {
                 EDITING_X_MODE_MOUSE_X = true;
@@ -1160,6 +1144,10 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
                 isReversedX = false;
                 isReversedZ = true;
             }
+            if (cameraYaw < 0) {
+                cameraYaw += 360;
+            }
+            cameraYaw %= 360;
         }
 
         super.tick();
