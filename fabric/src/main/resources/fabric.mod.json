@@ -1,31 +1,33 @@
 {
-  "schemaVersion": 1,
-  "id": "creatorminecraft",
-  "version": "${version}",
-  "name": "Creator Minecraft Java",
-  "description": "It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!",
-  "authors": [
-    "ExtremeMakerX"
-  ],
-    "metadata": {
-    "icon": "assets/creatorminecraft/creator_icon.png"
-  },
-  "contact": {
-    "discord": "https://discord.gg/CYNUqB55da"
-  },
-  "license": "MIT",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "creatorminecraft.fabric.CreatorMCFabric"
-    ]
-  },
-  "mixins": [
-    "creatorminecraft.mixins.json"
-  ],
-  "depends": {
-    "fabric": "*",
-    "minecraft": ">=1.20.1",
-    "architectury": ">=9.1.12"
-  }
+	"schemaVersion": 1,
+	"id": "creatorminecraft",
+	"version": "1.0.0-pre-alpha",
+	"name": "Creator Minecraft Java",
+	"description": "It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!",
+	"authors": [
+		"ExtremeMakerX"
+	],
+
+	"contact": {
+		"discord": "https://discord.gg/CYNUqB55da"
+	},
+	"license": "MIT",
+	"icon": "assets/creatorminecraft/creator_icon.png",
+	"accessWidener": "creatorminecraft.accesswidener",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"org.creatorminecraft.init.CreatorMinecraftJava"
+		],
+		"client": [
+			"org.creatorminecraft.init.CreatorMinecraftJavaClient"
+		]
+	},
+	"mixins": [
+		"creatorminecraft.mixins.json"
+	],
+	"depends": {
+		"fabric": "*",
+		"minecraft": "1.20.2"
+	}
 }

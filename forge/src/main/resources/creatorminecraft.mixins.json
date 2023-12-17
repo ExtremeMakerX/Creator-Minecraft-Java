@@ -1,11 +1,9 @@
 {
 	"required": true,
 	"minVersion": "0.8",
-	"package": "creatorminecraft.mixin",
+	"package": "org.creatorminecraft.mixin",
 	"compatibilityLevel": "JAVA_8",
-	"client": [
-		"GameRendererMixin"
-	],
+	"refmap": "creatorminecraft.refmap.json",
 	"server": [],
 	"injectors": {
 		"defaultRequire": 1

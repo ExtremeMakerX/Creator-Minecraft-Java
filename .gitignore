@@ -1,19 +1,46 @@
-build/
-*.ipr
-run/
-*.iws
-out/
-*.iml
-.gradle/
-output/
-bin/
-libs/
+# gradle
 
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
 .classpath
 .project
-.idea/
-classes/
-.metadata
-.vscode
-.settings
-*.launch
+
+# macos
+
+*.DS_Store
+
+# fabric
+
+run/
+generated/
+loot_tables/
+**/org/creatorminecraft/mixin/
+forge/src/main/java/org/creatorminecraft/core
+forge/src/main/java/org/creatorminecraft/mod
+forge/src/main/resources/assets
+forge/src/main/resources/data
+forge/src/main/resources/META-INF
+fabric.mod.json
+creatorminecraft.accesswidener
+Keys.java
+**/lang/*.json
+!en_us.json

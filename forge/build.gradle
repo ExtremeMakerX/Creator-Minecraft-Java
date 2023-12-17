@@ -1,82 +1,93 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+import org.creatorminecraft.mod.BuildTools
+
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "net.minecraftforge.gradle" version "+"
+    id "org.spongepowered.mixin" version "+"
 }
 
-architectury {
-    platformSetupLoomIde()
-    forge()
-}
+final BuildTools buildTools = new BuildTools(minecraftVersion, "forge", project)
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-        mixinConfig "creatorminecraft.mixins.json"
+minecraft {
+    mappings channel: "official", version: minecraftVersion
+    accessTransformer = file("src/main/resources/META-INF/accesstransformer.cfg")
+    runs {
+        configureEach {
+            property "forge.logging.markers", "REGISTRIES"
+            property "forge.logging.console.level", "debug"
+        }
+        client {}
+        server { args "--nogui" }
     }
 }
 
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
-}
+sourceSets.main.resources { srcDir "src/generated/resources" }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${buildTools.getForgeVersion()}"
+    annotationProcessor "org.spongepowered:mixin:+:processor"
+    shadowImplementation "org.mtr:Minecraft-Mappings-forge-${minecraftVersion}:0.0.1-dev"
 }
 
-processResources {
-    inputs.property "version", project.version
 
-    filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(buildTools.javaLanguageVersion))
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.register("setupFiles") {
+    copy {
+        outputs.upToDateWhen { false }
+        from "src/main/mods.template.toml"
+        into "src/main/resources/META-INF"
+        filter(ReplaceTokens, tokens: ["minecraft": minecraftVersion, "version": minecraftVersion + "-" + version])
+        rename "(.+).template.toml", "\$1.toml"
+    }
+
+    delete fileTree("src/main/java/org/creatorminecraft/mod")
+    delete fileTree("src/main/resources/assets")
+    delete fileTree("src/main/resources/data")
+
+    copy {
+        outputs.upToDateWhen { false }
+        from "../fabric/src/main/java/org/creatorminecraft/mod"
+        into "src/main/java/org/creatorminecraft/mod"
+    }
+
+    copy {
+        outputs.upToDateWhen { false }
+        from "../fabric/src/main/java/org/creatorminecraft/core"
+        into "src/main/java/org/creatorminecraft/core"
+    }
+
+    copy {
+        outputs.upToDateWhen { false }
+        from "../fabric/src/main/resources/assets"
+        into "src/main/resources/assets"
+    }
+
+    copy {
+        outputs.upToDateWhen { false }
+        from "../fabric/src/main/resources/data"
+        into "src/main/resources/data"
+    }
+}
+
+build {
+    doLast {
+        buildTools.copyBuildFile()
     }
 }
 
 shadowJar {
-    exclude "fabric.mod.json"
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
+    finalizedBy "reobfShadowJar"
 }
 
-remapJar {
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
+reobf {
+    shadowJar {}
 }
 
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
-}
+assemble.dependsOn shadowJar
