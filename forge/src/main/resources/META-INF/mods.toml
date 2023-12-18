@@ -5,7 +5,7 @@ license = "MIT"
 
 [[mods]]
 modId = "creatorminecraft"
-version = "1.20.2-1.0.0-pre-alpha"
+version = "1.20.2-1.0.1-pre-alpha"
 displayName = "Creator Minecraft Java"
 authors = "ExtremeMakerX"
 description = '''It merges the capabilities of 3D software and it has MTR creator features that allow a user to create models faster and more efficiently!'''
