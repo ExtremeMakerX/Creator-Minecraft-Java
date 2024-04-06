@@ -57,6 +57,11 @@ public class CreatorMinecraftScreenSettings extends Screen implements CreatorIGU
     }
 
     @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         if (minecraft != null) {
             final MultiBufferSource.BufferSource bufferSource = minecraft.renderBuffers().bufferSource();

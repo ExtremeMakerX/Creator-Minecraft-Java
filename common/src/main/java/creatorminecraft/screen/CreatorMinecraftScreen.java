@@ -13,6 +13,7 @@ import creatorminecraft.widgets.DynamicButtonCMJ;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -120,27 +121,27 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         textFieldRotationX = new CreatorMinecraftEditBox();
         textFieldRotationY = new CreatorMinecraftEditBox();
         textFieldRotationZ = new CreatorMinecraftEditBox();
-        buttonExitModelEditor = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/icon_exit.png"), 20, 40, button -> {
+        buttonExitModelEditor = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/icon_exit"), new ResourceLocation("widget/icon_exit_highlighted")),button -> {
             isModelEditGui = false;
         });
-        buttonCreateModelIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/icon_add_cube.png"), 20, 40, button -> {
+        buttonCreateModelIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/icon_add_cube"), new ResourceLocation("widget/icon_add_cube_highlighted")), button -> {
             dynamicEntityModelEditing.addModelSlot();
         });
-        buttonCreateFolderIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/icon_add_folder.png"), 20, 40, button -> {
+        buttonCreateFolderIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/icon_add_folder"), new ResourceLocation("widget/icon_add_folder_highlighted")), button -> {
         });
-        buttonModelPartPositionIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_move_icon.png"), 20, 40, button -> {
+        buttonModelPartPositionIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/modelpart_move_icon"), new ResourceLocation("widget/modelpart_move_icon_highlighted")), button -> {
             movePositionScreenMode = true;
             resizeScreenMode = false;
             rotateScreenMode = false;
             dynamicEntityModelEditing.screenGUIToolMode();
         });
-        buttonModelPartSizeIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_resize_icon.png"), 20, 40, button -> {
+        buttonModelPartSizeIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/modelpart_resize_icon"), new ResourceLocation("widget/modelpart_resize_icon_highlighted")), button -> {
             resizeScreenMode = true;
             movePositionScreenMode = false;
             rotateScreenMode = false;
             dynamicEntityModelEditing.screenGUIToolMode();
         });
-        buttonModelPartRotationIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, 0, 0, 20, new ResourceLocation("creatorminecraft:textures/gui/modelpart_rotation_icon.png"), 20, 40, button -> {
+        buttonModelPartRotationIcon = new ImageButton(0, 0, 0, STANDARD_SIZE, new WidgetSprites(new ResourceLocation("widget/modelpart_rotation_icon"), new ResourceLocation("widget/modelpart_rotation_icon_highlighted")), button -> {
             rotateScreenMode = true;
             movePositionScreenMode = false;
             resizeScreenMode = false;
@@ -256,6 +257,11 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
         if (minecraft != null) {
             GUI_RENDER_GRAPHICS = true;
         }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
     }
 
     public void updateJavaModelPartPosition() {
@@ -756,26 +762,26 @@ public class CreatorMinecraftScreen extends Screen implements CreatorIGUI {
 
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
+    public boolean mouseScrolled(double d, double e, double f, double g) {
         if (isModelEditing && isModelEditGui) {
-                if (amount < 0) {
-                    modelPartTarget += 1;
-                    if (modelPartTarget >= DynamicEntityModelEditing.getModelListSize()) {
-                        modelPartTarget = DynamicEntityModelEditing.getModelListSize() - 1;
-                    }
-                } else {
-                    modelPartTarget -= 1;
-                    if (modelPartTarget < 0) {
-                        modelPartTarget = 0;
-                    }
+            if (g < 0) {
+                modelPartTarget += 1;
+                if (modelPartTarget >= DynamicEntityModelEditing.getModelListSize()) {
+                    modelPartTarget = DynamicEntityModelEditing.getModelListSize() - 1;
                 }
+            } else {
+                modelPartTarget -= 1;
+                if (modelPartTarget < 0) {
+                    modelPartTarget = 0;
+                }
+            }
         } else {
             double sensitivity = 1.5;
-            cameraZ -= amount * sensitivity;
+            cameraZ -= g * sensitivity;
             cameraZ = Math.max(cameraZ, -50.1f);
             cameraZ = Math.min(cameraZ, 100.0f);
         }
-        return super.mouseScrolled(mouseX, mouseY, amount);
+        return super.mouseScrolled(d, e, f, g);
     }
 
     @Override

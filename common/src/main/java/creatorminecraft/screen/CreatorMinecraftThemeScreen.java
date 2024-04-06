@@ -28,6 +28,11 @@ public class CreatorMinecraftThemeScreen extends Screen implements CreatorIGUI {
     }
 
     @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -1072689136);
         themeSelectorList.renderBackground(guiGraphics);

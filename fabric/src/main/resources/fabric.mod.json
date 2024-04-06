@@ -7,7 +7,7 @@
   "authors": [
     "ExtremeMakerX"
   ],
-    "metadata": {
+  "metadata": {
     "icon": "assets/creatorminecraft/creator_icon.png"
   },
   "contact": {
@@ -25,7 +25,7 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.20.1",
-    "architectury": ">=9.1.12"
+    "minecraft": ">=1.20.4",
+    "architectury": ">=11.1.13"
   }
 }
