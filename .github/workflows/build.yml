@@ -31,12 +31,12 @@ jobs:
         run: ./gradlew ${{ matrix.loader }}:build -PbuildVersion="${{ matrix.minecraft }}":jar -PbuildVersion="${{ matrix.minecraft }}"
       - name: Capture release artifacts
         if: matrix.loader != 'common'
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v3
         with:
           name: Fabric and Forge
-          path: build/release/
+          path: build/release
       - name: Capture lib artifacts
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v3
         with:
           name: Libraries
-          path: build/libs/
+          path: build/libs
