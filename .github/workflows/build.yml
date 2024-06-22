@@ -4,38 +4,36 @@
 # against bad commits.
 
 name: Build
-on:
-  - pull_request
-  - push
+on: [pull_request, push]
 
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        minecraft:
-          - 1.20.4
-        loader:
-          - fabric
-          - forge
-          - common
+        minecraft: [1.20.4]
+    #runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@main
       - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v2
+        uses: gradle/wrapper-validation-action@main
       - name: Setup JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@main
         with:
           java-version: 17
           distribution: 'zulu'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build ${{ matrix.minecraft }} ${{ matrix.loader }}
-        run: ./gradlew ${{ matrix.loader }}:build -PbuildVersion="${{ matrix.minecraft }}"
+      - name: Setup Fabric files
+        run: ./gradlew fabric:remapJar -PminecraftVersion="${{ matrix.minecraft }}"
+      - name: Setup Forge files
+        run: ./gradlew forge:remapJar -PminecraftVersion="${{ matrix.minecraft }}"
+      - name: Build ${{ matrix.minecraft }}
+        run: ./gradlew build -PminecraftVersion="${{ matrix.minecraft }}"
       - name: Capture release artifacts
-        if: contains(matrix.loader, 'common')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@main
         with:
-          name: Fabric and Forge
+          name: Fabric and Forge ${{ matrix.minecraft }}
           path: build/release/
