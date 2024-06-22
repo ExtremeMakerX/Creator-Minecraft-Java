@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: Fabric and Forge ${{ matrix.minecraft }}
-          path: build/release/
+          path: build/libs/
