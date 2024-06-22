@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         minecraft: [1.20.4]
-        loader: [fabric, forge, quilt, common]
+        loader: [fabric, forge, fabric-like, quilt, common]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -37,19 +37,3 @@ jobs:
         with:
           name: Libraries
           path: build/libs/
-  crowdin:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Upload Translations to Crowdin
-        uses: crowdin/github-action@1.4.8
-        with:
-          upload_sources: true
-          upload_translations: false
-          download_translations: false
-          push_translations: false
-          create_pull_request: false
-          project_id: '735752'
-          token: ${{ secrets.CROWDIN_API_KEY }}
-          config: 'crowdin.yml'
