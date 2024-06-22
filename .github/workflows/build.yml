@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         minecraft: [1.20.4]
+        loader: [ fabric, forge, common ]
     #runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
@@ -26,14 +27,16 @@ jobs:
           distribution: 'zulu'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Setup Fabric files
-        run: ./gradlew fabric:remapJar -PminecraftVersion="${{ matrix.minecraft }}"
-      - name: Setup Forge files
-        run: ./gradlew forge:remapJar -PminecraftVersion="${{ matrix.minecraft }}"
-      - name: Build ${{ matrix.minecraft }}
-        run: ./gradlew build -PminecraftVersion="${{ matrix.minecraft }}"
+      - name: Build ${{ matrix.minecraft }} ${{ matrix.loader }}
+        run: ./gradlew ${{ matrix.loader }}:build -PbuildVersion="${{ matrix.minecraft }}"
       - name: Capture release artifacts
-        uses: actions/upload-artifact@main
+        if: matrix.loader != 'common'
+        uses: actions/upload-artifact@v2
         with:
-          name: Fabric and Forge ${{ matrix.minecraft }}
+          name: Fabric and Forge
+          path: build/release/
+      - name: Capture lib artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Libraries
           path: build/libs/
