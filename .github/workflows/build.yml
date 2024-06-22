@@ -28,15 +28,15 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build ${{ matrix.minecraft }} ${{ matrix.loader }}
-        run: ./gradlew ${{ matrix.loader }}:build -PbuildVersion="${{ matrix.minecraft }}"
+        run: ./gradlew ${{ matrix.loader }}:build -PbuildVersion="${{ matrix.minecraft }}:jar -PbuildVersion="${{ matrix.minecraft }}"
       - name: Capture release artifacts
         if: matrix.loader != 'common'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@main
         with:
           name: Fabric and Forge
           path: build/release/
       - name: Capture lib artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@main
         with:
           name: Libraries
           path: build/libs/
