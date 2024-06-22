@@ -15,8 +15,6 @@ jobs:
         minecraft:
           - 1.20.4
         loader:
-          - quilt
-          - fabric-like
           - fabric
           - forge
           - common
@@ -30,7 +28,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'zulu'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
       - name: Build ${{ matrix.minecraft }} ${{ matrix.loader }}
@@ -39,10 +37,5 @@ jobs:
         if: contains(matrix.loader, 'common')
         uses: actions/upload-artifact@v4
         with:
-          name: Fabric, Forge and Quilt
+          name: Fabric and Forge
           path: build/release/
-      - name: Capture lib artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: Libraries
-          path: build/libs/
