@@ -12,7 +12,7 @@ jobs:
       matrix:
         loader: [quilt, fabric-like, fabric, forge, common ]
     #runs-on: self-hosted
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -25,15 +25,13 @@ jobs:
           distribution: 'temurin'
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build Loader
-        run: |
-          cd ${{ matrix.loader }}
-          ./gradlew build jar
-      - name: Capture lib artifacts
-        if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
+      - name: Build ${{ matrix.loader }}
+        run: ./gradlew ${{ matrix.loader }}:build ${{ matrix.loader }}:jar
+      - name: Capture release artifacts
+        if: matrix.loader != 'common' & matrix.loader != 'fabric-like'
         uses: actions/upload-artifact@v2
         with:
-          name: Jar Files - ${{ matrix.loader }}"
+          name: "Jar Files - ${{ matrix.loader }}"
           path: |
             ${{ matrix.loader }}/build/libs/creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
             !${{ matrix.loader }}/build/libs/
