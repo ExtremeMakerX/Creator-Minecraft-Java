@@ -11,6 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         minecraft: [1.20.4]
+        version: [1.1.0-alpha]
         loader: [quilt, fabric-like, fabric, forge, common]
     #runs-on: self-hosted
     runs-on: ubuntu-latest
@@ -32,7 +33,7 @@ jobs:
         if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
         run: |
          for file in creatorminecraft-1.1.0-alpha.jar creatorminecraft-1.1.0-alpha-sources.jar creatorminecraft-1.1.0-alpha-dev-shadow.jar; do
-         mv ${{ matrix.loader }}/build/libs/$file ${{ matrix.loader }}/build/libs/creatorminecraft-${{ matrix.loader }}-${{ matrix.minecraft }}-${file#creatorminecraft-1.1.0-alpha}
+         mv ${{ matrix.loader }}/build/libs/$file ${{ matrix.loader }}/build/libs/creatorminecraft-${{ matrix.loader }}-${{ matrix.minecraft }}-${{ matrix.version }}-${file#creatorminecraft-1.1.0-alpha}
          done
       - name: Capture release artifacts
         if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
