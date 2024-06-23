@@ -28,7 +28,7 @@ jobs:
       - name: Build ${{ matrix.loader }}
         run: ./gradlew ${{ matrix.loader }}:build ${{ matrix.loader }}:jar
       - name: Capture release artifacts
-        if: matrix.loader != 'common' & matrix.loader != 'fabric-like'
+        if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
         uses: actions/upload-artifact@v2
         with:
           name: "Jar Files - ${{ matrix.loader }}"
