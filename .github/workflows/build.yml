@@ -32,9 +32,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Fabric and Forge
-          path: build/release/
+          path: ${{ matrix.loader }}/build/release/
       - name: Capture lib artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Libraries
-          path: build/libs/
+          path: ${{ matrix.loader }}/build/libs/
