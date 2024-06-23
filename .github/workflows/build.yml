@@ -12,7 +12,7 @@ jobs:
       matrix:
         loader: [quilt, fabric-like, fabric, forge, common ]
     #runs-on: self-hosted
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@main
@@ -38,5 +38,3 @@ jobs:
             !${{ matrix.loader }}/**/*-dev.jar
             !${{ matrix.loader }}/**/*-shadow.jar
             !${{ matrix.loader }}/**/*-transformProduction*.jar
-            creatorminecraft-1.1.0-alpha.jar
-                     rename: creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
