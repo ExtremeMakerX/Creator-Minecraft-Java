@@ -14,39 +14,29 @@ jobs:
     #runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
-       - name: Checkout repository
-         uses: actions/checkout@main
-       - name: Validate gradle wrapper
-         uses: gradle/wrapper-validation-action@main
-       - name: Setup JDK 17
-         runs-on: ubuntu-latest
-         steps:
-            - name: Make gradle wrapper executable
-              run: chmod +x ./gradlew
-            - name: Build Quilt
-              run: |
-                cd quilt
-                ./gradlew build jar
-            - name: Build Fabric
-              run: |
-                cd fabric
-                ./gradlew build jar
-            - name: Build Forge
-              run: |
-                cd forge
-                ./gradlew build jar
-            - name: Build Common
-              run: |
-                cd common
-                ./gradlew build jar
-            - name: Capture lib artifacts
-              if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
-              uses: actions/upload-artifact@main
-              with:
-                name: Jar Files
-                path: |
-                  **/build/libs/creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
-                  !build/libs/
-                  !**/*-dev.jar
-                  !**/*-shadow.jar
-                  !**/*-transformProduction*.jar
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@main
+      - name: Setup JDK 17
+        uses: actions/setup-java@main
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: Build Loader
+        run: |
+          cd ${{ matrix.loader }}
+          ./gradlew build jar
+      - name: Capture lib artifacts
+        if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
+        uses: actions/upload-artifact@main
+        with:
+          name: Jar Files - ${{ matrix.loader }}"
+          path: |
+            ${{ matrix.loader }}/build/libs/creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
+            !${{ matrix.loader }}/build/libs/
+            !${{ matrix.loader }}/**/*-dev.jar
+            !${{ matrix.loader }}/**/*-shadow.jar
+            !${{ matrix.loader }}/**/*-transformProduction*.jar
