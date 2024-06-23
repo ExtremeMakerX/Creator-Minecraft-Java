@@ -20,22 +20,22 @@ jobs:
       - name: Validate gradle wrapper
         uses: gradle/wrapper-validation-action@v2
       - name: Setup JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
           distribution: 'zulu'
+          java-version: 17
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
-      - name: Build ${{ matrix.minecraft }} ${{ matrix.loader }}
+      - name: Build ${{ matrix.loader }}
         run: ./gradlew ${{ matrix.loader }}:build ${{ matrix.loader }}:jar
       - name: Capture release artifacts
         if: matrix.loader != 'common'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: Fabric and Forge
-          path: build/release/
+          path: build/release
       - name: Capture lib artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: Libraries
-          path: build/libs/
+          path: build/libs
