@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        loader: [ fabric, forge, common ]
+        loader: [quilt, fabric-like, fabric, forge, common ]
     #runs-on: self-hosted
     runs-on: ubuntu-20.04
     steps:
