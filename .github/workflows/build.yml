@@ -14,13 +14,13 @@ jobs:
     #runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@main
-      - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@main
-         - name: Setup JDK 17
-          runs-on: ubuntu-latest
-          steps:
+       - name: Checkout repository
+         uses: actions/checkout@main
+       - name: Validate gradle wrapper
+         uses: gradle/wrapper-validation-action@main
+       - name: Setup JDK 17
+         runs-on: ubuntu-latest
+         steps:
             - name: Make gradle wrapper executable
               run: chmod +x ./gradlew
             - name: Build Quilt
