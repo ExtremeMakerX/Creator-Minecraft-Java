@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
       - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+        uses: gradle/wrapper-validation-action@v2
       - name: Setup JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@main
         with:
           java-version: 17
           distribution: 'temurin'
@@ -29,12 +29,14 @@ jobs:
         run: ./gradlew ${{ matrix.loader }}:build ${{ matrix.loader }}:jar
       - name: Capture release artifacts
         if: matrix.loader != 'common' && matrix.loader != 'fabric-like'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@main
         with:
-          name: "Jar Files - ${{ matrix.loader }}"
+          name: Jar Files - ${{ matrix.loader }}
           path: |
-            ${{ matrix.loader }}/build/libs/creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
+            ${{ matrix.loader }}/build/libs/
             !${{ matrix.loader }}/build/libs/
             !${{ matrix.loader }}/**/*-dev.jar
             !${{ matrix.loader }}/**/*-shadow.jar
             !${{ matrix.loader }}/**/*-transformProduction*.jar
+            creatorminecraft-1.1.0-alpha.jar
+                     rename: creatorminecraft-1.1.0-alpha-${{ matrix.loader }}.jar
